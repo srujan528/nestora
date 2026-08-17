@@ -43,14 +43,19 @@ export function getQueryClient() {
 }
 
 function getTrpcUrl() {
-  const customBackend = process.env.NEXT_PUBLIC_BACKEND_URL;
-  if (customBackend) {
-    return customBackend.endsWith('/trpc') ? customBackend : `${customBackend}/trpc`;
-  }
   if (typeof window !== 'undefined') {
+    const customBackend = process.env.NEXT_PUBLIC_BACKEND_URL;
+    if (customBackend && !customBackend.includes('localhost') && !customBackend.includes('127.0.0.1')) {
+      return customBackend.endsWith('/trpc') ? customBackend : `${customBackend}/trpc`;
+    }
     return '/api/trpc';
   }
-  return 'http://localhost:3001/trpc';
+
+  const customBackend = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.BACKEND_URL;
+  if (customBackend && !customBackend.includes('localhost') && !customBackend.includes('127.0.0.1')) {
+    return customBackend.endsWith('/trpc') ? customBackend : `${customBackend}/trpc`;
+  }
+  return process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/trpc` : 'http://localhost:3001/trpc';
 }
 
 // Factory function to create tRPC client
