@@ -1,4 +1,4 @@
-# Nestora — AI-Powered Student Accommodation & Decision Platform for College Students in India 🏠🎓
+# Nestora — AI-Powered Student Accommodation & Decision Platform for College Students in India
 
 **Nestora** is a production-quality, AI-powered two-sided accommodation marketplace designed specifically for college students across major university hubs in India (**Nitte Meenakshi Institute of Technology (NMIT) Yelahanka/Bagalur Cross**, Delhi University North Campus, IIT Bombay Powai, Christ University Koramangala, VIT Vellore).
 
@@ -6,7 +6,7 @@ Nestora solves the core problem every incoming college student faces: deciding w
 
 ---
 
-## 🌟 Key Architecture & Highlights
+## Key Architecture & Highlights
 
 ### 1. Two-Sided Marketplace & Role-Based Access Control (RBAC)
 - **Student Role**: College selection, multi-filter PG discovery, split-screen interactive Google Vector Maps, True Monthly Cost Calculator, PG-to-PG side-by-side comparison matrix, saved PGs, direct inquiry submission, and AI decision assistant.
@@ -30,7 +30,7 @@ Nestora solves the core problem every incoming college student faces: deciding w
 
 ---
 
-## 🔑 Demo Login Credentials
+## Demo Login Credentials
 
 | Role | Email | Password | Access URL |
 | :--- | :--- | :--- | :--- |
@@ -41,7 +41,7 @@ Nestora solves the core problem every incoming college student faces: deciding w
 
 ---
 
-## 🛠️ Tech Stack & Monorepo Structure
+## Tech Stack & Monorepo Structure
 
 - **Frontend**: Next.js 14, React 18, TailwindCSS, Lucide/Heroicons, TanStack Query, tRPC Client.
 - **Backend**: Node.js, Express, tRPC Server v11, Prisma ORM, SQLite / MySQL.
@@ -59,7 +59,7 @@ pgfinder/
 
 ---
 
-## 🚀 Quick Start & Installation
+## Quick Start & Installation
 
 ### 1. Install Dependencies
 ```bash
@@ -92,7 +92,7 @@ pnpm dev
 
 ---
 
-## 🧪 Automated Test Verification Matrix
+## Automated Test Verification Matrix
 
 Run the comprehensive test suite:
 
@@ -102,17 +102,17 @@ npx tsx tests/runFinalQATest.ts
 ```
 
 Test Results Summary:
-- ✅ **Phase 2 Test**: Authentication & RBAC Server-Side Guards — **PASSED**
-- ✅ **Phase 3A Test**: Google Routes API & Vector Maps Discovery — **PASSED**
-- ✅ **Phase 3B Test**: True Monthly Cost Calculator & Multi-PG Comparison — **PASSED**
-- ✅ **Phase 4A Test**: AI Foundation & Decoupled PGSearchService — **PASSED**
-- ✅ **Phase 4B Test**: Core Recommendation Pipeline — **PASSED**
-- ✅ **Phase 4C Test**: Specialized Intelligence Agents — **PASSED**
-- ✅ **Phase 4D Test**: tRPC `ai.getRecommendation` Procedure & UI Integration — **PASSED**
-- ✅ **Final QA Audit**: Full System End-to-End & DEMO Integrity Assertions — **PASSED**
+- **Phase 2 Test**: Authentication & RBAC Server-Side Guards — **PASSED**
+- **Phase 3A Test**: Google Routes API & Vector Maps Discovery — **PASSED**
+- **Phase 3B Test**: True Monthly Cost Calculator & Multi-PG Comparison — **PASSED**
+- **Phase 4A Test**: AI Foundation & Decoupled PGSearchService — **PASSED**
+- **Phase 4B Test**: Core Recommendation Pipeline — **PASSED**
+- **Phase 4C Test**: Specialized Intelligence Agents — **PASSED**
+- **Phase 4D Test**: tRPC `ai.getRecommendation` Procedure & UI Integration — **PASSED**
+- **Final QA Audit**: Full System End-to-End & DEMO Integrity Assertions — **PASSED**
 
 ---
 
-## 📄 License
+## License
 
-MIT License © Nestora Team 2026.
+MIT License Copyright Nestora Team 2026.
