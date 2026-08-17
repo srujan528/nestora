@@ -1,7 +1,13 @@
 import { AgentState } from './AgentState';
 
 export interface SupervisorRoutingDecision {
-  intent: 'RECOMMENDATION' | 'FOOD_QUERY' | 'COMMUTE_QUERY' | 'COST_QUERY' | 'VERIFICATION_QUERY' | 'COMPREHENSIVE_QUERY';
+  intent:
+    | 'RECOMMENDATION'
+    | 'FOOD_QUERY'
+    | 'COMMUTE_QUERY'
+    | 'COST_QUERY'
+    | 'VERIFICATION_QUERY'
+    | 'COMPREHENSIVE_QUERY';
   requiredAgents: string[];
   reason: string;
 }
@@ -13,15 +19,35 @@ export class SupervisorRouter {
   static async route(state: AgentState): Promise<SupervisorRoutingDecision> {
     const promptText = state.naturalLanguageRequest.toLowerCase();
 
-    if (promptText.includes('best pg for me') || promptText.includes('all details') || promptText.includes('everything') || promptText.includes('full report')) {
+    if (
+      promptText.includes('best pg for me') ||
+      promptText.includes('all details') ||
+      promptText.includes('everything') ||
+      promptText.includes('full report')
+    ) {
       return {
         intent: 'COMPREHENSIVE_QUERY',
-        requiredAgents: ['PROFILER', 'MATCHER', 'COST', 'COMMUTE', 'FOOD', 'REVIEW', 'VERIFICATION', 'DECISION'],
+        requiredAgents: [
+          'PROFILER',
+          'MATCHER',
+          'COST',
+          'COMMUTE',
+          'FOOD',
+          'REVIEW',
+          'VERIFICATION',
+          'DECISION',
+        ],
         reason: 'Comprehensive PG analysis intent detected.',
       };
     }
 
-    if (promptText.includes('food') || promptText.includes('mess') || promptText.includes('menu') || promptText.includes('veg') || promptText.includes('breakfast')) {
+    if (
+      promptText.includes('food') ||
+      promptText.includes('mess') ||
+      promptText.includes('menu') ||
+      promptText.includes('veg') ||
+      promptText.includes('breakfast')
+    ) {
       return {
         intent: 'FOOD_QUERY',
         requiredAgents: ['PROFILER', 'MATCHER', 'FOOD', 'REVIEW', 'DECISION'],
@@ -29,7 +55,14 @@ export class SupervisorRouter {
       };
     }
 
-    if (promptText.includes('commute') || promptText.includes('distance') || promptText.includes('walk') || promptText.includes('drive') || promptText.includes('metro') || promptText.includes('shortest')) {
+    if (
+      promptText.includes('commute') ||
+      promptText.includes('distance') ||
+      promptText.includes('walk') ||
+      promptText.includes('drive') ||
+      promptText.includes('metro') ||
+      promptText.includes('shortest')
+    ) {
       return {
         intent: 'COMMUTE_QUERY',
         requiredAgents: ['PROFILER', 'MATCHER', 'COMMUTE', 'DECISION'],
@@ -37,7 +70,13 @@ export class SupervisorRouter {
       };
     }
 
-    if (promptText.includes('cost') || promptText.includes('budget') || promptText.includes('electricity') || promptText.includes('cheap') || promptText.includes('true cost')) {
+    if (
+      promptText.includes('cost') ||
+      promptText.includes('budget') ||
+      promptText.includes('electricity') ||
+      promptText.includes('cheap') ||
+      promptText.includes('true cost')
+    ) {
       return {
         intent: 'COST_QUERY',
         requiredAgents: ['PROFILER', 'MATCHER', 'COST', 'DECISION'],
@@ -45,7 +84,12 @@ export class SupervisorRouter {
       };
     }
 
-    if (promptText.includes('verify') || promptText.includes('trust') || promptText.includes('safe') || promptText.includes('demo')) {
+    if (
+      promptText.includes('verify') ||
+      promptText.includes('trust') ||
+      promptText.includes('safe') ||
+      promptText.includes('demo')
+    ) {
       return {
         intent: 'VERIFICATION_QUERY',
         requiredAgents: ['PROFILER', 'MATCHER', 'VERIFICATION', 'REVIEW', 'DECISION'],

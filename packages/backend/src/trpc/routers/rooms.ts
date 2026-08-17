@@ -8,7 +8,14 @@ export const roomsRouter = {
     .input(
       z.object({
         pgId: z.number(),
-        roomType: z.enum(['SINGLE', 'DOUBLE_SHARING', 'TRIPLE_SHARING', 'FOUR_SHARING', 'PRIVATE_ROOM', 'FULL_FLAT']),
+        roomType: z.enum([
+          'SINGLE',
+          'DOUBLE_SHARING',
+          'TRIPLE_SHARING',
+          'FOUR_SHARING',
+          'PRIVATE_ROOM',
+          'FULL_FLAT',
+        ]),
         monthlyRent: z.number().positive(),
         securityDeposit: z.number().nonnegative(),
         isAc: z.boolean().default(false),
@@ -25,7 +32,10 @@ export const roomsRouter = {
       }
 
       if (pg.ownerId !== ctx.userId && ctx.user.role !== 'ADMIN') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Not authorized to manage rooms for this PG' });
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Not authorized to manage rooms for this PG',
+        });
       }
 
       const room = await prisma.room.create({
@@ -43,7 +53,16 @@ export const roomsRouter = {
     .input(
       z.object({
         id: z.number(),
-        roomType: z.enum(['SINGLE', 'DOUBLE_SHARING', 'TRIPLE_SHARING', 'FOUR_SHARING', 'PRIVATE_ROOM', 'FULL_FLAT']).optional(),
+        roomType: z
+          .enum([
+            'SINGLE',
+            'DOUBLE_SHARING',
+            'TRIPLE_SHARING',
+            'FOUR_SHARING',
+            'PRIVATE_ROOM',
+            'FULL_FLAT',
+          ])
+          .optional(),
         monthlyRent: z.number().positive().optional(),
         securityDeposit: z.number().nonnegative().optional(),
         isAc: z.boolean().optional(),
@@ -75,22 +94,20 @@ export const roomsRouter = {
       return updated;
     }),
 
-  delete: ownerProcedure
-    .input(z.object({ id: z.number() }))
-    .mutation(async ({ input, ctx }) => {
-      const room = await prisma.room.findUnique({
-        where: { id: input.id },
-        include: { pg: true },
-      });
-      if (!room) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Room not found' });
-      }
+  delete: ownerProcedure.input(z.object({ id: z.number() })).mutation(async ({ input, ctx }) => {
+    const room = await prisma.room.findUnique({
+      where: { id: input.id },
+      include: { pg: true },
+    });
+    if (!room) {
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'Room not found' });
+    }
 
-      if (room.pg.ownerId !== ctx.userId && ctx.user.role !== 'ADMIN') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Not authorized to delete this room' });
-      }
+    if (room.pg.ownerId !== ctx.userId && ctx.user.role !== 'ADMIN') {
+      throw new TRPCError({ code: 'FORBIDDEN', message: 'Not authorized to delete this room' });
+    }
 
-      await prisma.room.delete({ where: { id: input.id } });
-      return { success: true };
-    }),
+    await prisma.room.delete({ where: { id: input.id } });
+    return { success: true };
+  }),
 };

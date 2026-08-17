@@ -107,7 +107,9 @@ async function runPhase2Verification() {
     foodType: 'VEG_ONLY',
     description: 'Premium boys accommodation near DU North Campus with 3 meals daily.',
   });
-  console.log(`✅ PG Created Successfully: ID #${createdPg.id} (${createdPg.title}), Status: ${createdPg.status}, isDemoData: ${createdPg.isDemoData}`);
+  console.log(
+    `✅ PG Created Successfully: ID #${createdPg.id} (${createdPg.title}), Status: ${createdPg.status}, isDemoData: ${createdPg.isDemoData}`
+  );
 
   // Test 3: Ownership Protection
   console.log('\n4️⃣ Testing Server-Side Ownership Protection...');
@@ -135,7 +137,9 @@ async function runPhase2Verification() {
     totalBeds: 4,
     availableBeds: 2,
   });
-  console.log(`✅ Room Added Successfully: Room ID #${createdRoom.id}, Rent: ₹${createdRoom.monthlyRent}, AC: ${createdRoom.isAc}`);
+  console.log(
+    `✅ Room Added Successfully: Room ID #${createdRoom.id}, Rent: ₹${createdRoom.monthlyRent}, AC: ${createdRoom.isAc}`
+  );
 
   // Test 5: Publish PG Listing
   console.log('\n6️⃣ Testing Listing Publication...');
@@ -176,15 +180,19 @@ async function runPhase2Verification() {
   const adminCaller = createCaller(adminUser, adminUser.id);
   const overview = await adminCaller.admin.getOverview();
   console.log('✅ Admin Overview Metrics:');
-  console.log(` - Total Users: ${overview.users.total} (Students: ${overview.users.students}, Owners: ${overview.users.owners})`);
-  console.log(` - Total Listings: ${overview.listings.total} (Real: ${overview.listings.real}, Demo: ${overview.listings.demo})`);
+  console.log(
+    ` - Total Users: ${overview.users.total} (Students: ${overview.users.students}, Owners: ${overview.users.owners})`
+  );
+  console.log(
+    ` - Total Listings: ${overview.listings.total} (Real: ${overview.listings.real}, Demo: ${overview.listings.demo})`
+  );
   console.log(` - Verified Listings: ${overview.listings.verified}`);
 
   console.log('\n🎉 ALL PHASE 2 VERIFICATION TESTS PASSED SUCCESSFULLY!');
 }
 
 runPhase2Verification()
-  .catch((err) => {
+  .catch(err => {
     console.error('❌ Phase 2 Verification Failed:', err);
     process.exit(1);
   })

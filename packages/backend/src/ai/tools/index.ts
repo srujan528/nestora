@@ -13,7 +13,11 @@ export class AITools {
   /**
    * Commute Tool calling GoogleRoutesService.
    */
-  static async computeCommute(origin: LocationCoord, destination: LocationCoord, mode: 'WALKING' | 'DRIVING' | 'TRANSIT' = 'WALKING') {
+  static async computeCommute(
+    origin: LocationCoord,
+    destination: LocationCoord,
+    mode: 'WALKING' | 'DRIVING' | 'TRANSIT' = 'WALKING'
+  ) {
     return GoogleRoutesService.computeDistanceAndCommute(origin, destination, mode);
   }
 

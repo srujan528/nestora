@@ -1,4 +1,13 @@
-import { PrismaClient, Role, GenderRestriction, RoomType, FoodType, MealOption, PhotoCategory, ListingStatus } from '@prisma/client';
+import {
+  PrismaClient,
+  Role,
+  GenderRestriction,
+  RoomType,
+  FoodType,
+  MealOption,
+  PhotoCategory,
+  ListingStatus,
+} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -110,7 +119,8 @@ async function main() {
         shortName: 'NMIT Bangalore',
         city: 'Bengaluru',
         state: 'Karnataka',
-        address: 'P.B. No. 6429, Doddaballapur Road, BSF Campus, Yelahanka, Bengaluru, Karnataka 560064',
+        address:
+          'P.B. No. 6429, Doddaballapur Road, BSF Campus, Yelahanka, Bengaluru, Karnataka 560064',
         placeId: 'ChIJb0T0Hw0DDTkR8J559_demo_nmit',
         latitude: 13.1294,
         longitude: 77.5879,
@@ -163,13 +173,20 @@ async function main() {
     console.log('✅ Demo Colleges created.');
 
     // High resolution Unsplash Room Photo URLs
-    const imgNewport = 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&auto=format&fit=crop&q=80';
-    const imgSalta = 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&auto=format&fit=crop&q=80';
-    const imgVernon = 'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800&auto=format&fit=crop&q=80';
-    const imgIncheon = 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop&q=80';
-    const imgSalisbury = 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&auto=format&fit=crop&q=80';
-    const imgBathroom = 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&auto=format&fit=crop&q=80';
-    const imgDining = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop&q=80';
+    const imgNewport =
+      'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&auto=format&fit=crop&q=80';
+    const imgSalta =
+      'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&auto=format&fit=crop&q=80';
+    const imgVernon =
+      'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800&auto=format&fit=crop&q=80';
+    const imgIncheon =
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop&q=80';
+    const imgSalisbury =
+      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&auto=format&fit=crop&q=80';
+    const imgBathroom =
+      'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&auto=format&fit=crop&q=80';
+    const imgDining =
+      'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop&q=80';
 
     // 3. Create Real PGs near NMIT Bagalur Cross (Exact names & data from Stanza Living screenshots)
 
@@ -184,8 +201,8 @@ async function main() {
         city: 'Bengaluru',
         pincode: '560064',
         placeId: 'ChIJb0T0Hw0DDTkR8J559_demo_newport',
-        latitude: 13.1250,
-        longitude: 77.5880,
+        latitude: 13.125,
+        longitude: 77.588,
         distanceMeters: 450,
         commuteTimeMins: 5,
         commuteMode: 'WALKING',
@@ -214,7 +231,8 @@ async function main() {
         isVerified: true,
         isDemoData: true,
         verificationNotes: 'Verified premium Stanza Living residence near NMIT Bagalur Cross.',
-        description: 'Premium student residency near NMIT & Bagalur Cross. Features modern designer interiors, 300 Mbps Wi-Fi, split AC, room cleaning, and 3 daily meals.',
+        description:
+          'Premium student residency near NMIT & Bagalur Cross. Features modern designer interiors, 300 Mbps Wi-Fi, split AC, room cleaning, and 3 daily meals.',
         publishedAt: new Date(),
         rooms: {
           create: [
@@ -232,8 +250,18 @@ async function main() {
         },
         photos: {
           create: [
-            { url: imgNewport, category: PhotoCategory.ROOM, caption: 'Newport House Dining & Common Lounge', displayOrder: 1 },
-            { url: imgBathroom, category: PhotoCategory.BATHROOM, caption: 'Attached Washroom', displayOrder: 2 },
+            {
+              url: imgNewport,
+              category: PhotoCategory.ROOM,
+              caption: 'Newport House Dining & Common Lounge',
+              displayOrder: 1,
+            },
+            {
+              url: imgBathroom,
+              category: PhotoCategory.BATHROOM,
+              caption: 'Attached Washroom',
+              displayOrder: 2,
+            },
           ],
         },
         amenities: {
@@ -246,13 +274,41 @@ async function main() {
         },
         weeklyMenu: {
           create: {
-            monday: JSON.stringify({ breakfast: 'Masala Dosa', lunch: 'South Veg Meals', dinner: 'Paneer Butter Masala' }),
-            tuesday: JSON.stringify({ breakfast: 'Idli Vada', lunch: 'Dal Rice', dinner: 'Aloo Gobi & Chapati' }),
-            wednesday: JSON.stringify({ breakfast: 'Set Dosa', lunch: 'Kadi Chawal', dinner: 'Chicken Curry / Shahi Paneer' }),
-            thursday: JSON.stringify({ breakfast: 'Poha & Tea', lunch: 'Chole Bhature', dinner: 'Mix Veg & Dal' }),
-            friday: JSON.stringify({ breakfast: 'Puri Saagu', lunch: 'Veg Biryani', dinner: 'Egg Curry / Matar Paneer' }),
-            saturday: JSON.stringify({ breakfast: 'Bisibelebath', lunch: 'Rajma Chawal', dinner: 'Veg Pulao & Curd' }),
-            sunday: JSON.stringify({ breakfast: 'Masala Dosa', lunch: 'Chicken Biryani / Veg Thali', dinner: 'Light Khichdi' }),
+            monday: JSON.stringify({
+              breakfast: 'Masala Dosa',
+              lunch: 'South Veg Meals',
+              dinner: 'Paneer Butter Masala',
+            }),
+            tuesday: JSON.stringify({
+              breakfast: 'Idli Vada',
+              lunch: 'Dal Rice',
+              dinner: 'Aloo Gobi & Chapati',
+            }),
+            wednesday: JSON.stringify({
+              breakfast: 'Set Dosa',
+              lunch: 'Kadi Chawal',
+              dinner: 'Chicken Curry / Shahi Paneer',
+            }),
+            thursday: JSON.stringify({
+              breakfast: 'Poha & Tea',
+              lunch: 'Chole Bhature',
+              dinner: 'Mix Veg & Dal',
+            }),
+            friday: JSON.stringify({
+              breakfast: 'Puri Saagu',
+              lunch: 'Veg Biryani',
+              dinner: 'Egg Curry / Matar Paneer',
+            }),
+            saturday: JSON.stringify({
+              breakfast: 'Bisibelebath',
+              lunch: 'Rajma Chawal',
+              dinner: 'Veg Pulao & Curd',
+            }),
+            sunday: JSON.stringify({
+              breakfast: 'Masala Dosa',
+              lunch: 'Chicken Biryani / Veg Thali',
+              dinner: 'Light Khichdi',
+            }),
           },
         },
       },
@@ -269,7 +325,7 @@ async function main() {
         city: 'Bengaluru',
         pincode: '560064',
         placeId: 'ChIJb0T0Hw0DDTkR8J559_demo_salta',
-        latitude: 13.1270,
+        latitude: 13.127,
         longitude: 77.5895,
         distanceMeters: 600,
         commuteTimeMins: 7,
@@ -299,7 +355,8 @@ async function main() {
         isVerified: true,
         isDemoData: true,
         verificationNotes: 'Verified Stanza Living co-ed house near NMIT Bagalur Cross.',
-        description: 'Vibrant student house near NMIT Bagalur Cross. Includes high speed internet, attached washrooms, double/triple sharing options, and daily meals.',
+        description:
+          'Vibrant student house near NMIT Bagalur Cross. Includes high speed internet, attached washrooms, double/triple sharing options, and daily meals.',
         publishedAt: new Date(),
         rooms: {
           create: [
@@ -317,7 +374,12 @@ async function main() {
         },
         photos: {
           create: [
-            { url: imgSalta, category: PhotoCategory.ROOM, caption: 'Salta House Common Dining Area', displayOrder: 1 },
+            {
+              url: imgSalta,
+              category: PhotoCategory.ROOM,
+              caption: 'Salta House Common Dining Area',
+              displayOrder: 1,
+            },
           ],
         },
         amenities: {
@@ -329,13 +391,37 @@ async function main() {
         },
         weeklyMenu: {
           create: {
-            monday: JSON.stringify({ breakfast: 'Poha', lunch: 'Veg Meals', dinner: 'Paneer Masala' }),
+            monday: JSON.stringify({
+              breakfast: 'Poha',
+              lunch: 'Veg Meals',
+              dinner: 'Paneer Masala',
+            }),
             tuesday: JSON.stringify({ breakfast: 'Idli', lunch: 'Dal Rice', dinner: 'Aloo Matar' }),
-            wednesday: JSON.stringify({ breakfast: 'Dosa', lunch: 'Kadi Chawal', dinner: 'Chicken Curry / Paneer' }),
-            thursday: JSON.stringify({ breakfast: 'Upma', lunch: 'Chole Rice', dinner: 'Aloo Paratha' }),
-            friday: JSON.stringify({ breakfast: 'Puri Bhaji', lunch: 'Dal Fry', dinner: 'Special Veg Thali' }),
-            saturday: JSON.stringify({ breakfast: 'Uttapam', lunch: 'Veg Pulao', dinner: 'Dal Tadka' }),
-            sunday: JSON.stringify({ breakfast: 'Masala Dosa', lunch: 'Special Thali', dinner: 'Light Khichdi' }),
+            wednesday: JSON.stringify({
+              breakfast: 'Dosa',
+              lunch: 'Kadi Chawal',
+              dinner: 'Chicken Curry / Paneer',
+            }),
+            thursday: JSON.stringify({
+              breakfast: 'Upma',
+              lunch: 'Chole Rice',
+              dinner: 'Aloo Paratha',
+            }),
+            friday: JSON.stringify({
+              breakfast: 'Puri Bhaji',
+              lunch: 'Dal Fry',
+              dinner: 'Special Veg Thali',
+            }),
+            saturday: JSON.stringify({
+              breakfast: 'Uttapam',
+              lunch: 'Veg Pulao',
+              dinner: 'Dal Tadka',
+            }),
+            sunday: JSON.stringify({
+              breakfast: 'Masala Dosa',
+              lunch: 'Special Thali',
+              dinner: 'Light Khichdi',
+            }),
           },
         },
       },
@@ -352,8 +438,8 @@ async function main() {
         city: 'Bengaluru',
         pincode: '560064',
         placeId: 'ChIJb0T0Hw0DDTkR8J559_demo_vernon',
-        latitude: 13.1310,
-        longitude: 77.5910,
+        latitude: 13.131,
+        longitude: 77.591,
         distanceMeters: 800,
         commuteTimeMins: 9,
         commuteMode: 'WALKING',
@@ -382,7 +468,8 @@ async function main() {
         isVerified: true,
         isDemoData: true,
         verificationNotes: 'Verified boys student PG near NMIT Bagalur Road.',
-        description: 'Budget-friendly gents student residence near NMIT campus. Triple & Quadruple sharing rooms, attached washrooms, Wi-Fi, and 3 daily meals.',
+        description:
+          'Budget-friendly gents student residence near NMIT campus. Triple & Quadruple sharing rooms, attached washrooms, Wi-Fi, and 3 daily meals.',
         publishedAt: new Date(),
         rooms: {
           create: [
@@ -400,7 +487,12 @@ async function main() {
         },
         photos: {
           create: [
-            { url: imgVernon, category: PhotoCategory.ROOM, caption: 'Vernon House Colorful Dining Lounge', displayOrder: 1 },
+            {
+              url: imgVernon,
+              category: PhotoCategory.ROOM,
+              caption: 'Vernon House Colorful Dining Lounge',
+              displayOrder: 1,
+            },
           ],
         },
         amenities: {
@@ -411,13 +503,37 @@ async function main() {
         },
         weeklyMenu: {
           create: {
-            monday: JSON.stringify({ breakfast: 'Poha', lunch: 'South Veg Meals', dinner: 'Paneer Tikka' }),
+            monday: JSON.stringify({
+              breakfast: 'Poha',
+              lunch: 'South Veg Meals',
+              dinner: 'Paneer Tikka',
+            }),
             tuesday: JSON.stringify({ breakfast: 'Dosa', lunch: 'Dal Rice', dinner: 'Aloo Gobi' }),
-            wednesday: JSON.stringify({ breakfast: 'Idli', lunch: 'Rajma Chawal', dinner: 'Chicken Masala / Paneer' }),
-            thursday: JSON.stringify({ breakfast: 'Upma', lunch: 'Kadi Chawal', dinner: 'Aloo Matar' }),
-            friday: JSON.stringify({ breakfast: 'Puri Saagu', lunch: 'Veg Pulao', dinner: 'Egg Curry / Paneer' }),
-            saturday: JSON.stringify({ breakfast: 'Vada Sambar', lunch: 'Dal Fry', dinner: 'Veg Biryani' }),
-            sunday: JSON.stringify({ breakfast: 'Ghee Dosa', lunch: 'Chicken Biryani', dinner: 'Light Khichdi' }),
+            wednesday: JSON.stringify({
+              breakfast: 'Idli',
+              lunch: 'Rajma Chawal',
+              dinner: 'Chicken Masala / Paneer',
+            }),
+            thursday: JSON.stringify({
+              breakfast: 'Upma',
+              lunch: 'Kadi Chawal',
+              dinner: 'Aloo Matar',
+            }),
+            friday: JSON.stringify({
+              breakfast: 'Puri Saagu',
+              lunch: 'Veg Pulao',
+              dinner: 'Egg Curry / Paneer',
+            }),
+            saturday: JSON.stringify({
+              breakfast: 'Vada Sambar',
+              lunch: 'Dal Fry',
+              dinner: 'Veg Biryani',
+            }),
+            sunday: JSON.stringify({
+              breakfast: 'Ghee Dosa',
+              lunch: 'Chicken Biryani',
+              dinner: 'Light Khichdi',
+            }),
           },
         },
       },
@@ -434,8 +550,8 @@ async function main() {
         city: 'Bengaluru',
         pincode: '560064',
         placeId: 'ChIJb0T0Hw0DDTkR8J559_demo_incheon',
-        latitude: 13.1280,
-        longitude: 77.5860,
+        latitude: 13.128,
+        longitude: 77.586,
         distanceMeters: 500,
         commuteTimeMins: 6,
         commuteMode: 'WALKING',
@@ -464,7 +580,8 @@ async function main() {
         isVerified: true,
         isDemoData: true,
         verificationNotes: 'Verified boys PG near NMIT Bagalur Cross.',
-        description: 'Modern boys PG near NMIT. Features attached washrooms, high speed Wi-Fi, games zone, and 3 daily meals.',
+        description:
+          'Modern boys PG near NMIT. Features attached washrooms, high speed Wi-Fi, games zone, and 3 daily meals.',
         publishedAt: new Date(),
         rooms: {
           create: [
@@ -482,7 +599,12 @@ async function main() {
         },
         photos: {
           create: [
-            { url: imgIncheon, category: PhotoCategory.ROOM, caption: 'Incheon House Green Study Area', displayOrder: 1 },
+            {
+              url: imgIncheon,
+              category: PhotoCategory.ROOM,
+              caption: 'Incheon House Green Study Area',
+              displayOrder: 1,
+            },
           ],
         },
         amenities: {
@@ -493,13 +615,37 @@ async function main() {
         },
         weeklyMenu: {
           create: {
-            monday: JSON.stringify({ breakfast: 'Poha', lunch: 'Veg Meals', dinner: 'Paneer Butter Masala' }),
+            monday: JSON.stringify({
+              breakfast: 'Poha',
+              lunch: 'Veg Meals',
+              dinner: 'Paneer Butter Masala',
+            }),
             tuesday: JSON.stringify({ breakfast: 'Idli', lunch: 'Dal Rice', dinner: 'Mix Veg' }),
-            wednesday: JSON.stringify({ breakfast: 'Dosa', lunch: 'Kadi Chawal', dinner: 'Chicken Curry' }),
-            thursday: JSON.stringify({ breakfast: 'Upma', lunch: 'Chole Rice', dinner: 'Aloo Paratha' }),
-            friday: JSON.stringify({ breakfast: 'Puri Bhaji', lunch: 'Dal Fry', dinner: 'Special Veg Thali' }),
-            saturday: JSON.stringify({ breakfast: 'Uttapam', lunch: 'Veg Pulao', dinner: 'Dal Tadka' }),
-            sunday: JSON.stringify({ breakfast: 'Masala Dosa', lunch: 'Special Thali', dinner: 'Light Khichdi' }),
+            wednesday: JSON.stringify({
+              breakfast: 'Dosa',
+              lunch: 'Kadi Chawal',
+              dinner: 'Chicken Curry',
+            }),
+            thursday: JSON.stringify({
+              breakfast: 'Upma',
+              lunch: 'Chole Rice',
+              dinner: 'Aloo Paratha',
+            }),
+            friday: JSON.stringify({
+              breakfast: 'Puri Bhaji',
+              lunch: 'Dal Fry',
+              dinner: 'Special Veg Thali',
+            }),
+            saturday: JSON.stringify({
+              breakfast: 'Uttapam',
+              lunch: 'Veg Pulao',
+              dinner: 'Dal Tadka',
+            }),
+            sunday: JSON.stringify({
+              breakfast: 'Masala Dosa',
+              lunch: 'Special Thali',
+              dinner: 'Light Khichdi',
+            }),
           },
         },
       },
@@ -516,8 +662,8 @@ async function main() {
         city: 'Bengaluru',
         pincode: '560064',
         placeId: 'ChIJb0T0Hw0DDTkR8J559_demo_salisbury',
-        latitude: 13.1230,
-        longitude: 77.5850,
+        latitude: 13.123,
+        longitude: 77.585,
         distanceMeters: 950,
         commuteTimeMins: 11,
         commuteMode: 'WALKING',
@@ -546,7 +692,8 @@ async function main() {
         isVerified: true,
         isDemoData: true,
         verificationNotes: 'Verified Salisbury House near NMIT Bagalur Road.',
-        description: 'Premium student PG near NMIT Bagalur Road. Features double/triple sharing AC rooms, attached washroom, laundromat, 300 Mbps Wi-Fi, and daily meals.',
+        description:
+          'Premium student PG near NMIT Bagalur Road. Features double/triple sharing AC rooms, attached washroom, laundromat, 300 Mbps Wi-Fi, and daily meals.',
         publishedAt: new Date(),
         rooms: {
           create: [
@@ -564,7 +711,12 @@ async function main() {
         },
         photos: {
           create: [
-            { url: imgSalisbury, category: PhotoCategory.ROOM, caption: 'Salisbury House Modern Dining Area', displayOrder: 1 },
+            {
+              url: imgSalisbury,
+              category: PhotoCategory.ROOM,
+              caption: 'Salisbury House Modern Dining Area',
+              displayOrder: 1,
+            },
           ],
         },
         amenities: {
@@ -576,13 +728,37 @@ async function main() {
         },
         weeklyMenu: {
           create: {
-            monday: JSON.stringify({ breakfast: 'Idli Sambar', lunch: 'South Veg Meals', dinner: 'Paneer Tikka' }),
+            monday: JSON.stringify({
+              breakfast: 'Idli Sambar',
+              lunch: 'South Veg Meals',
+              dinner: 'Paneer Tikka',
+            }),
             tuesday: JSON.stringify({ breakfast: 'Dosa', lunch: 'Dal Rice', dinner: 'Mix Veg' }),
-            wednesday: JSON.stringify({ breakfast: 'Puri Saagu', lunch: 'Kadi Chawal', dinner: 'Chicken Curry' }),
-            thursday: JSON.stringify({ breakfast: 'Upma', lunch: 'Chole Rice', dinner: 'Aloo Paratha' }),
-            friday: JSON.stringify({ breakfast: 'Poha', lunch: 'Veg Biryani', dinner: 'Egg Curry' }),
-            saturday: JSON.stringify({ breakfast: 'Uttapam', lunch: 'Rajma Rice', dinner: 'Dal Tadka' }),
-            sunday: JSON.stringify({ breakfast: 'Masala Dosa', lunch: 'Chicken Biryani', dinner: 'Light Khichdi' }),
+            wednesday: JSON.stringify({
+              breakfast: 'Puri Saagu',
+              lunch: 'Kadi Chawal',
+              dinner: 'Chicken Curry',
+            }),
+            thursday: JSON.stringify({
+              breakfast: 'Upma',
+              lunch: 'Chole Rice',
+              dinner: 'Aloo Paratha',
+            }),
+            friday: JSON.stringify({
+              breakfast: 'Poha',
+              lunch: 'Veg Biryani',
+              dinner: 'Egg Curry',
+            }),
+            saturday: JSON.stringify({
+              breakfast: 'Uttapam',
+              lunch: 'Rajma Rice',
+              dinner: 'Dal Tadka',
+            }),
+            sunday: JSON.stringify({
+              breakfast: 'Masala Dosa',
+              lunch: 'Chicken Biryani',
+              dinner: 'Light Khichdi',
+            }),
           },
         },
       },
@@ -600,7 +776,8 @@ async function main() {
         foodRating: 5,
         wifiRating: 5,
         securityRating: 5,
-        comment: 'Food quality and cleaning standards both add to a good stay. Overall service quality in food and cleaning is good. Both areas are well maintained.',
+        comment:
+          'Food quality and cleaning standards both add to a good stay. Overall service quality in food and cleaning is good. Both areas are well maintained.',
         ownerResponse: 'Thank you Rasal Tech Vlog! We are glad you enjoy staying at Newport House.',
         ownerRespondedAt: new Date(),
       },
@@ -615,7 +792,8 @@ async function main() {
         foodRating: 5,
         wifiRating: 5,
         securityRating: 5,
-        comment: 'The upkeep of the place makes it feel warm and welcoming. Garbage is disposed of correctly and promptly. Bathrooms receive daily cleaning.',
+        comment:
+          'The upkeep of the place makes it feel warm and welcoming. Garbage is disposed of correctly and promptly. Bathrooms receive daily cleaning.',
         ownerResponse: 'Thank you Hot Gaming! Appreciate the feedback on cleanliness.',
         ownerRespondedAt: new Date(),
       },
@@ -630,7 +808,8 @@ async function main() {
         foodRating: 5,
         wifiRating: 5,
         securityRating: 5,
-        comment: 'The dining and common area is well coordinated. Positive standards maintained everywhere. Great proximity to NMIT campus.',
+        comment:
+          'The dining and common area is well coordinated. Positive standards maintained everywhere. Great proximity to NMIT campus.',
         ownerResponse: 'Thank you Fxzen! Happy to have you at Vernon House.',
         ownerRespondedAt: new Date(),
       },
@@ -647,7 +826,7 @@ async function main() {
   }
 }
 
-main().catch((e) => {
+main().catch(e => {
   console.error(e);
   process.exit(1);
 });

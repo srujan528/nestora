@@ -1,7 +1,14 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { publicProcedure, ownerProcedure } from '../trpc';
-import { prisma, ListingStatus, GenderRestriction, FoodType, MealOption, calculateTrueMonthlyCost } from '@qrent/shared';
+import {
+  prisma,
+  ListingStatus,
+  GenderRestriction,
+  FoodType,
+  MealOption,
+  calculateTrueMonthlyCost,
+} from '@qrent/shared';
 import { GoogleRoutesService } from '@/services/GoogleRoutesService';
 import { PGSearchService } from '@/services/PGSearchService';
 
@@ -11,7 +18,16 @@ const pgFilterSchema = z.object({
   minRent: z.number().optional(),
   maxRent: z.number().optional(),
   genderRestriction: z.enum(['BOYS', 'GIRLS', 'CO_ED']).optional(),
-  roomType: z.enum(['SINGLE', 'DOUBLE_SHARING', 'TRIPLE_SHARING', 'FOUR_SHARING', 'PRIVATE_ROOM', 'FULL_FLAT']).optional(),
+  roomType: z
+    .enum([
+      'SINGLE',
+      'DOUBLE_SHARING',
+      'TRIPLE_SHARING',
+      'FOUR_SHARING',
+      'PRIVATE_ROOM',
+      'FULL_FLAT',
+    ])
+    .optional(),
   foodType: z.enum(['VEG_ONLY', 'NON_VEG_ALLOWED', 'JAIN_AVAILABLE', 'NO_FOOD']).optional(),
   acRequired: z.boolean().optional(),
   maxDistanceKm: z.number().optional(),
@@ -28,80 +44,78 @@ export const pgsRouter = {
     });
   }),
 
-  getById: publicProcedure
-    .input(z.object({ id: z.number() }))
-    .query(async ({ input }) => {
-      const pg = await prisma.pGListing.findUnique({
-        where: { id: input.id },
-        include: {
-          college: true,
-          owner: {
-            select: { id: true, name: true, phone: true, email: true },
-          },
-          rooms: true,
-          photos: {
-            orderBy: { displayOrder: 'asc' },
-          },
-          amenities: true,
-          weeklyMenu: true,
-          reviews: {
-            include: {
-              user: { select: { id: true, name: true } },
-            },
-            orderBy: { createdAt: 'desc' },
-          },
+  getById: publicProcedure.input(z.object({ id: z.number() })).query(async ({ input }) => {
+    const pg = await prisma.pGListing.findUnique({
+      where: { id: input.id },
+      include: {
+        college: true,
+        owner: {
+          select: { id: true, name: true, phone: true, email: true },
         },
-      });
+        rooms: true,
+        photos: {
+          orderBy: { displayOrder: 'asc' },
+        },
+        amenities: true,
+        weeklyMenu: true,
+        reviews: {
+          include: {
+            user: { select: { id: true, name: true } },
+          },
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+    });
 
-      if (!pg) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'PG listing not found' });
-      }
+    if (!pg) {
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'PG listing not found' });
+    }
 
-      let routeMetrics = {
-        distanceMeters: pg.distanceMeters,
-        distanceKm: parseFloat((pg.distanceMeters / 1000).toFixed(2)),
-        commuteTimeMins: pg.commuteTimeMins,
-        commuteMode: pg.commuteMode as any,
-        commuteCostEstMonthly: pg.commuteCostEstMonthly,
-        commuteFareFormula: pg.commuteFareFormula,
+    let routeMetrics = {
+      distanceMeters: pg.distanceMeters,
+      distanceKm: parseFloat((pg.distanceMeters / 1000).toFixed(2)),
+      commuteTimeMins: pg.commuteTimeMins,
+      commuteMode: pg.commuteMode as any,
+      commuteCostEstMonthly: pg.commuteCostEstMonthly,
+      commuteFareFormula: pg.commuteFareFormula,
+    };
+
+    if (pg.college) {
+      const calcResult = await GoogleRoutesService.computeDistanceAndCommute(
+        { latitude: pg.college.latitude, longitude: pg.college.longitude },
+        { latitude: pg.latitude, longitude: pg.longitude }
+      );
+      routeMetrics = {
+        distanceMeters: calcResult.distanceMeters,
+        distanceKm: calcResult.distanceKm,
+        commuteTimeMins: calcResult.commuteTimeMins,
+        commuteMode: calcResult.commuteMode,
+        commuteCostEstMonthly: calcResult.commuteCostEstMonthly,
+        commuteFareFormula: calcResult.commuteFareFormula,
       };
+    }
 
-      if (pg.college) {
-        const calcResult = await GoogleRoutesService.computeDistanceAndCommute(
-          { latitude: pg.college.latitude, longitude: pg.college.longitude },
-          { latitude: pg.latitude, longitude: pg.longitude }
-        );
-        routeMetrics = {
-          distanceMeters: calcResult.distanceMeters,
-          distanceKm: calcResult.distanceKm,
-          commuteTimeMins: calcResult.commuteTimeMins,
-          commuteMode: calcResult.commuteMode,
-          commuteCostEstMonthly: calcResult.commuteCostEstMonthly,
-          commuteFareFormula: calcResult.commuteFareFormula,
-        };
-      }
+    const costBreakdown = calculateTrueMonthlyCost({
+      minRent: pg.minRent,
+      foodIncludedInRent: pg.foodIncludedInRent,
+      extraFoodCharges: pg.extraFoodCharges,
+      estElectricityMonthly: pg.estElectricityMonthly,
+      estMaintenanceMonthly: pg.estMaintenanceMonthly,
+      commuteCostEstMonthly: routeMetrics.commuteCostEstMonthly,
+    });
 
-      const costBreakdown = calculateTrueMonthlyCost({
-        minRent: pg.minRent,
-        foodIncludedInRent: pg.foodIncludedInRent,
-        extraFoodCharges: pg.extraFoodCharges,
-        estElectricityMonthly: pg.estElectricityMonthly,
-        estMaintenanceMonthly: pg.estMaintenanceMonthly,
-        commuteCostEstMonthly: routeMetrics.commuteCostEstMonthly,
-      });
-
-      return {
-        ...pg,
-        distanceMeters: routeMetrics.distanceMeters,
-        distanceKm: routeMetrics.distanceKm,
-        commuteTimeMins: routeMetrics.commuteTimeMins,
-        commuteMode: routeMetrics.commuteMode,
-        commuteCostEstMonthly: routeMetrics.commuteCostEstMonthly,
-        commuteFareFormula: routeMetrics.commuteFareFormula,
-        trueMonthlyCostBreakdown: costBreakdown,
-        trueMonthlyCost: costBreakdown.totalMonthlyCost,
-      };
-    }),
+    return {
+      ...pg,
+      distanceMeters: routeMetrics.distanceMeters,
+      distanceKm: routeMetrics.distanceKm,
+      commuteTimeMins: routeMetrics.commuteTimeMins,
+      commuteMode: routeMetrics.commuteMode,
+      commuteCostEstMonthly: routeMetrics.commuteCostEstMonthly,
+      commuteFareFormula: routeMetrics.commuteFareFormula,
+      trueMonthlyCostBreakdown: costBreakdown,
+      trueMonthlyCost: costBreakdown.totalMonthlyCost,
+    };
+  }),
 
   getOwnerListings: ownerProcedure.query(async ({ ctx }) => {
     const where = ctx.user.role === 'ADMIN' ? {} : { ownerId: ctx.userId };
@@ -135,7 +149,7 @@ export const pgsRouter = {
         city: z.string().min(2),
         pincode: z.string().min(6).max(10),
         latitude: z.number().default(28.6139),
-        longitude: z.number().default(77.2090),
+        longitude: z.number().default(77.209),
         genderRestriction: z.enum(['BOYS', 'GIRLS', 'CO_ED']),
         curfewTime: z.string().optional(),
         noticePeriodDays: z.number().default(30),
@@ -145,8 +159,18 @@ export const pgsRouter = {
         securityDeposit: z.number().nonnegative(),
         estElectricityMonthly: z.number().default(800),
         estMaintenanceMonthly: z.number().default(0),
-        foodType: z.enum(['VEG_ONLY', 'NON_VEG_ALLOWED', 'JAIN_AVAILABLE', 'NO_FOOD']).default('VEG_ONLY'),
-        mealOption: z.enum(['BREAKFAST_LUNCH_DINNER', 'BREAKFAST_DINNER_ONLY', 'LUNCH_DINNER_ONLY', 'OPTIONAL_MESS', 'SELF_COOKING']).default('BREAKFAST_LUNCH_DINNER'),
+        foodType: z
+          .enum(['VEG_ONLY', 'NON_VEG_ALLOWED', 'JAIN_AVAILABLE', 'NO_FOOD'])
+          .default('VEG_ONLY'),
+        mealOption: z
+          .enum([
+            'BREAKFAST_LUNCH_DINNER',
+            'BREAKFAST_DINNER_ONLY',
+            'LUNCH_DINNER_ONLY',
+            'OPTIONAL_MESS',
+            'SELF_COOKING',
+          ])
+          .default('BREAKFAST_LUNCH_DINNER'),
         foodIncludedInRent: z.boolean().default(true),
         extraFoodCharges: z.number().default(0),
         description: z.string().min(10),
@@ -164,7 +188,8 @@ export const pgsRouter = {
           pincode: input.pincode,
           latitude: input.latitude,
           longitude: input.longitude,
-          genderRestriction: (GenderRestriction as any)[input.genderRestriction] || input.genderRestriction,
+          genderRestriction:
+            (GenderRestriction as any)[input.genderRestriction] || input.genderRestriction,
           curfewTime: input.curfewTime || null,
           noticePeriodDays: input.noticePeriodDays,
           houseRules: input.houseRules || null,
@@ -215,7 +240,15 @@ export const pgsRouter = {
         estElectricityMonthly: z.number().optional(),
         estMaintenanceMonthly: z.number().optional(),
         foodType: z.enum(['VEG_ONLY', 'NON_VEG_ALLOWED', 'JAIN_AVAILABLE', 'NO_FOOD']).optional(),
-        mealOption: z.enum(['BREAKFAST_LUNCH_DINNER', 'BREAKFAST_DINNER_ONLY', 'LUNCH_DINNER_ONLY', 'OPTIONAL_MESS', 'SELF_COOKING']).optional(),
+        mealOption: z
+          .enum([
+            'BREAKFAST_LUNCH_DINNER',
+            'BREAKFAST_DINNER_ONLY',
+            'LUNCH_DINNER_ONLY',
+            'OPTIONAL_MESS',
+            'SELF_COOKING',
+          ])
+          .optional(),
         foodIncludedInRent: z.boolean().optional(),
         extraFoodCharges: z.number().optional(),
         description: z.string().min(10).optional(),
@@ -229,7 +262,10 @@ export const pgsRouter = {
       }
 
       if (existing.ownerId !== ctx.userId && ctx.user.role !== 'ADMIN') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Not authorized to edit this PG listing' });
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Not authorized to edit this PG listing',
+        });
       }
 
       const { id, ...data } = input;
@@ -258,11 +294,17 @@ export const pgsRouter = {
       }
 
       if (existing.ownerId !== ctx.userId && ctx.user.role !== 'ADMIN') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Not authorized to modify this PG listing' });
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Not authorized to modify this PG listing',
+        });
       }
 
       if (input.status === 'PUBLISHED' && existing.rooms.length === 0) {
-        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Cannot publish PG without at least one room type configured' });
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Cannot publish PG without at least one room type configured',
+        });
       }
 
       const updated = await prisma.pGListing.update({
@@ -276,19 +318,20 @@ export const pgsRouter = {
       return updated;
     }),
 
-  delete: ownerProcedure
-    .input(z.object({ id: z.number() }))
-    .mutation(async ({ input, ctx }) => {
-      const existing = await prisma.pGListing.findUnique({ where: { id: input.id } });
-      if (!existing) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'PG listing not found' });
-      }
+  delete: ownerProcedure.input(z.object({ id: z.number() })).mutation(async ({ input, ctx }) => {
+    const existing = await prisma.pGListing.findUnique({ where: { id: input.id } });
+    if (!existing) {
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'PG listing not found' });
+    }
 
-      if (existing.ownerId !== ctx.userId && ctx.user.role !== 'ADMIN') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Not authorized to delete this PG listing' });
-      }
+    if (existing.ownerId !== ctx.userId && ctx.user.role !== 'ADMIN') {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Not authorized to delete this PG listing',
+      });
+    }
 
-      await prisma.pGListing.delete({ where: { id: input.id } });
-      return { success: true };
-    }),
+    await prisma.pGListing.delete({ where: { id: input.id } });
+    return { success: true };
+  }),
 };

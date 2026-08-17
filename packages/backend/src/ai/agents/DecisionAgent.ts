@@ -14,14 +14,15 @@ export class DecisionAgent {
     if (candidates.length === 0) {
       state.finalRecommendations = {
         rankedCandidates: [],
-        summaryExplanation: 'No PG listings are available in the system for the requested college location.',
+        summaryExplanation:
+          'No PG listings are available in the system for the requested college location.',
       };
       state.executionMetadata.agentTimings['DecisionAgent'] = Date.now() - startTime;
       return state;
     }
 
     const structuredCandidates = candidates.map((pg, idx) => {
-      const scoreObj = scores.find((s) => s.pgId === pg.id) || {
+      const scoreObj = scores.find(s => s.pgId === pg.id) || {
         totalScore: 75,
         scoreBreakdown: {},
         hardConstraintsPassed: true,
@@ -34,7 +35,9 @@ export class DecisionAgent {
       const verifInfo = state.verificationResults?.[pg.id];
 
       const bedsOpen = pg.rooms?.reduce((acc: number, r: any) => acc + r.availableBeds, 0) || 0;
-      const roomTypes = pg.rooms?.map((r: any) => `${r.roomType} (${r.isAc ? 'AC' : 'Non-AC'})`).join(', ') || 'Sharing rooms';
+      const roomTypes =
+        pg.rooms?.map((r: any) => `${r.roomType} (${r.isAc ? 'AC' : 'Non-AC'})`).join(', ') ||
+        'Sharing rooms';
 
       const reasons: string[] = [];
       const advantages: string[] = [];
@@ -45,7 +48,9 @@ export class DecisionAgent {
       // 1. Cost & Budget Reasons
       if (costInfo) {
         if (costInfo.withinBudget) {
-          reasons.push(`Total True Monthly Cost ₹${costInfo.totalMonthlyCost.toLocaleString()} fits within your ₹${prefs.maxBudget || 20000} budget (${costInfo.statusMessage})`);
+          reasons.push(
+            `Total True Monthly Cost ₹${costInfo.totalMonthlyCost.toLocaleString()} fits within your ₹${prefs.maxBudget || 20000} budget (${costInfo.statusMessage})`
+          );
         } else {
           tradeoffs.push(costInfo.statusMessage);
         }
@@ -59,9 +64,13 @@ export class DecisionAgent {
       // 2. Commute & Location Reasons
       if (commuteInfo) {
         if (commuteInfo.satisfiesCommuteRequirement) {
-          reasons.push(`Commute is ${commuteInfo.distanceKm} km (${commuteInfo.commuteTimeMins} min ${commuteInfo.commuteMode.toLowerCase()}) to ${state.selectedCollege?.name || 'college'}`);
+          reasons.push(
+            `Commute is ${commuteInfo.distanceKm} km (${commuteInfo.commuteTimeMins} min ${commuteInfo.commuteMode.toLowerCase()}) to ${state.selectedCollege?.name || 'college'}`
+          );
         } else {
-          tradeoffs.push(`Commute time ${commuteInfo.commuteTimeMins} mins exceeds your target requirement`);
+          tradeoffs.push(
+            `Commute time ${commuteInfo.commuteTimeMins} mins exceeds your target requirement`
+          );
         }
       } else {
         reasons.push(`Located ${pg.distanceKm || 1.0} km from target college`);
@@ -69,7 +78,8 @@ export class DecisionAgent {
 
       // 3. Room & Amenities Advantages
       if (pg.rooms?.some((r: any) => r.isAc)) advantages.push('AC room configuration available');
-      if (bedsOpen > 0) advantages.push(`${bedsOpen} beds currently available for immediate occupancy`);
+      if (bedsOpen > 0)
+        advantages.push(`${bedsOpen} beds currently available for immediate occupancy`);
       if (pg.curfewTime) tradeoffs.push(`Curfew timing enforced: ${pg.curfewTime}`);
 
       // 4. Food Intelligence Advantages & Warnings

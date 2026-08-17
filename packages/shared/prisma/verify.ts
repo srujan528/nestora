@@ -7,7 +7,7 @@ async function main() {
   const colleges = await prisma.college.findMany({ include: { hostel: true, pgListings: true } });
   const hostels = await prisma.hostel.findMany();
   const pgListings = await prisma.pGListing.findMany({
-    include: { rooms: true, photos: true, amenities: true, weeklyMenu: true, reviews: true }
+    include: { rooms: true, photos: true, amenities: true, weeklyMenu: true, reviews: true },
   });
   const rooms = await prisma.room.findMany();
   const photos = await prisma.pGPhoto.findMany();
@@ -20,24 +20,46 @@ async function main() {
   console.log('=====================================================');
   console.log(`1. Total Users: ${users.length}`);
   users.forEach(u => console.log(`   - [${u.role}] ${u.name} (${u.email})`));
-  
+
   console.log(`\n2. Student Profiles: ${users.filter(u => u.studentProfile).length}`);
-  users.filter(u => u.studentProfile).forEach(u => {
-    const sp = u.studentProfile!;
-    console.log(`   - User #${u.id}: Min ₹${sp.minBudget}, Max ₹${sp.maxBudget}, Food: ${sp.foodPreference}, Max Commute: ${sp.maxCommuteTimeMins} mins`);
-  });
+  users
+    .filter(u => u.studentProfile)
+    .forEach(u => {
+      const sp = u.studentProfile!;
+      console.log(
+        `   - User #${u.id}: Min ₹${sp.minBudget}, Max ₹${sp.maxBudget}, Food: ${sp.foodPreference}, Max Commute: ${sp.maxCommuteTimeMins} mins`
+      );
+    });
 
   console.log(`\n3. Colleges: ${colleges.length}`);
-  colleges.forEach(c => console.log(`   - ${c.name} (${c.shortName || 'N/A'}) - ${c.city}, ${c.state}`));
+  colleges.forEach(c =>
+    console.log(`   - ${c.name} (${c.shortName || 'N/A'}) - ${c.city}, ${c.state}`)
+  );
 
-  console.log(`\n4. Hostels: ${hostels.length} (All isDemoData = ${hostels.every(h => h.isDemoData)})`);
-  hostels.forEach(h => console.log(`   - Hostel #${h.id}: Fee ₹${h.monthlyRentEquivalent}/mo, Total ₹${h.totalMonthlyCost}/mo, Gender: ${h.genderRestriction}`));
+  console.log(
+    `\n4. Hostels: ${hostels.length} (All isDemoData = ${hostels.every(h => h.isDemoData)})`
+  );
+  hostels.forEach(h =>
+    console.log(
+      `   - Hostel #${h.id}: Fee ₹${h.monthlyRentEquivalent}/mo, Total ₹${h.totalMonthlyCost}/mo, Gender: ${h.genderRestriction}`
+    )
+  );
 
-  console.log(`\n5. PG Listings: ${pgListings.length} (All isDemoData = ${pgListings.every(p => p.isDemoData)})`);
-  pgListings.forEach(p => console.log(`   - ${p.title} (₹${p.minRent}-₹${p.maxRent}/mo) - ${p.genderRestriction}, Rating: ${p.averageRating}`));
+  console.log(
+    `\n5. PG Listings: ${pgListings.length} (All isDemoData = ${pgListings.every(p => p.isDemoData)})`
+  );
+  pgListings.forEach(p =>
+    console.log(
+      `   - ${p.title} (₹${p.minRent}-₹${p.maxRent}/mo) - ${p.genderRestriction}, Rating: ${p.averageRating}`
+    )
+  );
 
   console.log(`\n6. Rooms: ${rooms.length}`);
-  rooms.forEach(r => console.log(`   - Room #${r.id} (PG #${r.pgId}): ${r.roomType}, ₹${r.monthlyRent}/mo, Beds: ${r.availableBeds}/${r.totalBeds}`));
+  rooms.forEach(r =>
+    console.log(
+      `   - Room #${r.id} (PG #${r.pgId}): ${r.roomType}, ₹${r.monthlyRent}/mo, Beds: ${r.availableBeds}/${r.totalBeds}`
+    )
+  );
 
   console.log(`\n7. Photos: ${photos.length}`);
   const categories = [...new Set(photos.map(p => p.category))];
@@ -51,7 +73,7 @@ async function main() {
 }
 
 main()
-  .catch((e) => {
+  .catch(e => {
     console.error('Verification failed:', e);
     process.exit(1);
   })

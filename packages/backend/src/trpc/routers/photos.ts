@@ -3,7 +3,15 @@ import { TRPCError } from '@trpc/server';
 import { ownerProcedure } from '../trpc';
 import { prisma } from '@qrent/shared';
 
-const photoCategoryEnum = z.enum(['ROOM', 'BATHROOM', 'KITCHEN', 'DINING', 'COMMON_AREA', 'EXTERIOR', 'BUILDING']);
+const photoCategoryEnum = z.enum([
+  'ROOM',
+  'BATHROOM',
+  'KITCHEN',
+  'DINING',
+  'COMMON_AREA',
+  'EXTERIOR',
+  'BUILDING',
+]);
 
 export const photosRouter = {
   add: ownerProcedure
@@ -24,7 +32,10 @@ export const photosRouter = {
       }
 
       if (pg.ownerId !== ctx.userId && ctx.user.role !== 'ADMIN') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Not authorized to add photos to this PG' });
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Not authorized to add photos to this PG',
+        });
       }
 
       const photo = await prisma.pGPhoto.create({
@@ -41,22 +52,20 @@ export const photosRouter = {
       return photo;
     }),
 
-  delete: ownerProcedure
-    .input(z.object({ id: z.number() }))
-    .mutation(async ({ input, ctx }) => {
-      const photo = await prisma.pGPhoto.findUnique({
-        where: { id: input.id },
-        include: { pg: true },
-      });
-      if (!photo) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Photo not found' });
-      }
+  delete: ownerProcedure.input(z.object({ id: z.number() })).mutation(async ({ input, ctx }) => {
+    const photo = await prisma.pGPhoto.findUnique({
+      where: { id: input.id },
+      include: { pg: true },
+    });
+    if (!photo) {
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'Photo not found' });
+    }
 
-      if (photo.pg.ownerId !== ctx.userId && ctx.user.role !== 'ADMIN') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Not authorized to delete this photo' });
-      }
+    if (photo.pg.ownerId !== ctx.userId && ctx.user.role !== 'ADMIN') {
+      throw new TRPCError({ code: 'FORBIDDEN', message: 'Not authorized to delete this photo' });
+    }
 
-      await prisma.pGPhoto.delete({ where: { id: input.id } });
-      return { success: true };
-    }),
+    await prisma.pGPhoto.delete({ where: { id: input.id } });
+    return { success: true };
+  }),
 };

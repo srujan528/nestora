@@ -7,7 +7,13 @@ export interface PGSearchInput {
   minRent?: number;
   maxRent?: number;
   genderRestriction?: 'BOYS' | 'GIRLS' | 'CO_ED';
-  roomType?: 'SINGLE' | 'DOUBLE_SHARING' | 'TRIPLE_SHARING' | 'FOUR_SHARING' | 'PRIVATE_ROOM' | 'FULL_FLAT';
+  roomType?:
+    | 'SINGLE'
+    | 'DOUBLE_SHARING'
+    | 'TRIPLE_SHARING'
+    | 'FOUR_SHARING'
+    | 'PRIVATE_ROOM'
+    | 'FULL_FLAT';
   foodType?: 'VEG_ONLY' | 'NON_VEG_ALLOWED' | 'JAIN_AVAILABLE' | 'NO_FOOD';
   acRequired?: boolean;
   maxDistanceKm?: number;
@@ -125,11 +131,7 @@ export class PGSearchService {
 
     if (!input.userRole || (input.userRole !== 'OWNER' && input.userRole !== 'ADMIN')) {
       andConditions.push({
-        OR: [
-          { status: 'PUBLISHED' },
-          { status: 'VERIFIED' },
-          { isDemoData: true },
-        ],
+        OR: [{ status: 'PUBLISHED' }, { status: 'VERIFIED' }, { isDemoData: true }],
       });
     }
 
@@ -160,7 +162,7 @@ export class PGSearchService {
     });
 
     const enrichedPgs: EnrichedPGResult[] = await Promise.all(
-      allMatchingPgs.map(async (pg) => {
+      allMatchingPgs.map(async pg => {
         const referenceCollege = selectedCollege || pg.college;
         let routeMetrics = {
           distanceMeters: pg.distanceMeters,
@@ -220,7 +222,7 @@ export class PGSearchService {
     );
 
     const filteredByDistance = input.maxDistanceKm
-      ? enrichedPgs.filter((p) => p.distanceKm <= input.maxDistanceKm!)
+      ? enrichedPgs.filter(p => p.distanceKm <= input.maxDistanceKm!)
       : enrichedPgs;
 
     const total = filteredByDistance.length;

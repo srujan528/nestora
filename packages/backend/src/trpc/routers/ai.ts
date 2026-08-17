@@ -12,7 +12,11 @@ export const aiRouter = {
     .input(recommendationInputSchema)
     .query(async ({ input, ctx }) => {
       const studentId = ctx.user?.role === 'STUDENT' ? ctx.user.id : undefined;
-      const state = await LangGraphRunner.runRecommendationPipeline(input.prompt, studentId, input.collegeId);
+      const state = await LangGraphRunner.runRecommendationPipeline(
+        input.prompt,
+        studentId,
+        input.collegeId
+      );
 
       return {
         workflowId: state.workflowId,

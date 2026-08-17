@@ -15,7 +15,8 @@ async function runPhase4BVerification() {
 
   // 1. Test Student Profiler Agent
   console.log('\n1️⃣ Testing Student Profiler Agent Extraction...');
-  const samplePrompt = 'I am joining DU North Campus. My budget is 10k. I want double sharing, AC and veg food. I don\'t want more than 20 minutes commute.';
+  const samplePrompt =
+    "I am joining DU North Campus. My budget is 10k. I want double sharing, AC and veg food. I don't want more than 20 minutes commute.";
   let profilerState = createInitialAgentState(samplePrompt);
   profilerState = await StudentProfilerAgent.execute(profilerState);
 
@@ -28,25 +29,35 @@ async function runPhase4BVerification() {
   console.log(` - Food Preference: ${prefs.foodPreference}`);
   console.log(` - Max Commute Mins: ${prefs.maxCommuteMins}`);
 
-  if (prefs.maxBudget !== 10000) throw new Error(`Budget extraction mismatch: expected 10000, got ${prefs.maxBudget}`);
-  if (prefs.preferredRoomType !== 'DOUBLE_SHARING') throw new Error(`Sharing extraction mismatch: expected DOUBLE_SHARING, got ${prefs.preferredRoomType}`);
+  if (prefs.maxBudget !== 10000)
+    throw new Error(`Budget extraction mismatch: expected 10000, got ${prefs.maxBudget}`);
+  if (prefs.preferredRoomType !== 'DOUBLE_SHARING')
+    throw new Error(
+      `Sharing extraction mismatch: expected DOUBLE_SHARING, got ${prefs.preferredRoomType}`
+    );
   if (prefs.acRequired !== true) throw new Error('AC required extraction failed!');
   if (prefs.foodPreference !== 'VEG_ONLY') throw new Error('Food preference extraction failed!');
 
   // Test Missing Preferences handling (should remain undefined)
   const sparseState = createInitialAgentState('Looking for PG near IIT Bombay');
   const sparseResult = await StudentProfilerAgent.execute(sparseState);
-  console.log(`✅ Sparse Prompt Test: maxBudget = ${sparseResult.studentPreferences.maxBudget} (undefined/null expected)`);
+  console.log(
+    `✅ Sparse Prompt Test: maxBudget = ${sparseResult.studentPreferences.maxBudget} (undefined/null expected)`
+  );
 
   // 2. Test PG Matcher Agent Deterministic Scoring & Ranking
   console.log('\n2️⃣ Testing PG Matcher Agent Deterministic Ranking...');
-  let matcherState = await StudentProfilerAgent.execute(createInitialAgentState('Looking for PG near DU North Campus under ₹12,000'));
+  let matcherState = await StudentProfilerAgent.execute(
+    createInitialAgentState('Looking for PG near DU North Campus under ₹12,000')
+  );
   matcherState = await PGMatcherAgent.execute(matcherState);
 
   console.log(`✅ PG Matcher returned ${matcherState.candidatePGs.length} ranked candidate PGs:`);
   matcherState.candidatePGs.forEach((pg, idx) => {
     const score = matcherState.deterministicScores[idx];
-    console.log(` Rank ${idx + 1}: [${pg.title}] | Match Score: ${score.totalScore}/100 | True Cost: ₹${pg.trueMonthlyCost} | Rent: ₹${pg.minRent}`);
+    console.log(
+      ` Rank ${idx + 1}: [${pg.title}] | Match Score: ${score.totalScore}/100 | True Cost: ₹${pg.trueMonthlyCost} | Rent: ₹${pg.minRent}`
+    );
   });
 
   if (matcherState.candidatePGs.length === 0) throw new Error('PG Matcher returned no candidates!');
@@ -58,11 +69,14 @@ async function runPhase4BVerification() {
 
   console.log('✅ Decision Agent Final Recommendation Summary:');
   console.log(` - "${recs?.summaryExplanation}"`);
-  console.log(` - Top Ranked Candidate: ${recs?.rankedCandidates[0]?.title} (${recs?.rankedCandidates[0]?.matchScore}% Match)`);
+  console.log(
+    ` - Top Ranked Candidate: ${recs?.rankedCandidates[0]?.title} (${recs?.rankedCandidates[0]?.matchScore}% Match)`
+  );
   console.log(` - Reasons:`, recs?.rankedCandidates[0]?.reasons);
   console.log(` - Trade-offs:`, recs?.rankedCandidates[0]?.tradeoffs);
 
-  if (!recs || recs.rankedCandidates.length === 0) throw new Error('Decision Agent returned empty recommendations!');
+  if (!recs || recs.rankedCandidates.length === 0)
+    throw new Error('Decision Agent returned empty recommendations!');
 
   // 4. Test End-to-End Pipeline Execution via LangGraphRunner
   console.log('\n4️⃣ Testing End-to-End LangGraph Pipeline Execution...');
@@ -73,7 +87,9 @@ async function runPhase4BVerification() {
   console.log('✅ End-to-End Pipeline Execution Succeeded:');
   console.log(` - Workflow ID: ${pipelineResult.workflowId}`);
   console.log(` - Selected College: ${pipelineResult.selectedCollege?.name}`);
-  console.log(` - Total Ranked Output Candidates: ${pipelineResult.finalRecommendations?.rankedCandidates.length}`);
+  console.log(
+    ` - Total Ranked Output Candidates: ${pipelineResult.finalRecommendations?.rankedCandidates.length}`
+  );
   console.log(` - Execution Timings:`, pipelineResult.executionMetadata.agentTimings);
 
   // 5. Test Empty Search Hard Constraint Violation Handling
@@ -82,7 +98,9 @@ async function runPhase4BVerification() {
     'PG near DU North Campus with budget 1000'
   );
   console.log(`✅ Impossible Budget Result Warnings:`, impossibleResult.warnings);
-  console.log(` - Returned Candidates Count: ${impossibleResult.finalRecommendations?.rankedCandidates.length}`);
+  console.log(
+    ` - Returned Candidates Count: ${impossibleResult.finalRecommendations?.rankedCandidates.length}`
+  );
 
   // 6. Test System Regressions (Phase 1, Phase 2, Phase 3A, Phase 3B, Phase 4A)
   console.log('\n6️⃣ Verifying System Regressions across all previous phases...');
@@ -93,7 +111,7 @@ async function runPhase4BVerification() {
 }
 
 runPhase4BVerification()
-  .catch((err) => {
+  .catch(err => {
     console.error('❌ Stage 4B Verification Failed:', err);
     process.exit(1);
   })

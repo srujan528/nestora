@@ -7,11 +7,11 @@ export class MatchScoringEngine {
   static normalizeWeights(weights?: Partial<PriorityWeights>): PriorityWeights {
     const defaultWeights: PriorityWeights = {
       budget: 0.25,
-      distance: 0.20,
+      distance: 0.2,
       roomSharing: 0.15,
       food: 0.15,
-      amenities: 0.10,
-      trueCost: 0.10,
+      amenities: 0.1,
+      trueCost: 0.1,
       reviews: 0.05,
     };
 
@@ -34,22 +34,34 @@ export class MatchScoringEngine {
   /**
    * Evaluates hard constraints and returns reason if any constraint fails.
    */
-  static evaluateHardConstraints(pg: any, prefs: StudentPreferences): { passed: boolean; reason?: string } {
+  static evaluateHardConstraints(
+    pg: any,
+    prefs: StudentPreferences
+  ): { passed: boolean; reason?: string } {
     if (
       prefs.genderRestriction &&
       pg.genderRestriction &&
       pg.genderRestriction !== 'CO_ED' &&
       pg.genderRestriction !== prefs.genderRestriction
     ) {
-      return { passed: false, reason: `Gender restriction mismatch (${pg.genderRestriction} vs ${prefs.genderRestriction})` };
+      return {
+        passed: false,
+        reason: `Gender restriction mismatch (${pg.genderRestriction} vs ${prefs.genderRestriction})`,
+      };
     }
 
     if (prefs.maxBudget && pg.minRent > prefs.maxBudget) {
-      return { passed: false, reason: `Min rent ₹${pg.minRent} exceeds max budget ₹${prefs.maxBudget}` };
+      return {
+        passed: false,
+        reason: `Min rent ₹${pg.minRent} exceeds max budget ₹${prefs.maxBudget}`,
+      };
     }
 
     if (prefs.maxDistanceKm && pg.distanceKm !== undefined && pg.distanceKm > prefs.maxDistanceKm) {
-      return { passed: false, reason: `Distance ${pg.distanceKm}km exceeds limit ${prefs.maxDistanceKm}km` };
+      return {
+        passed: false,
+        reason: `Distance ${pg.distanceKm}km exceeds limit ${prefs.maxDistanceKm}km`,
+      };
     }
 
     if (prefs.acRequired && pg.rooms) {
@@ -96,7 +108,10 @@ export class MatchScoringEngine {
     const maxBudget = prefs.maxBudget || 20000;
     const trueCost = pg.trueMonthlyCost || pg.minRent || 10000;
     const budgetDiff = Math.abs(trueCost - maxBudget);
-    const budgetScore = Math.max(0, Math.min(100, Math.round(100 * (1 - budgetDiff / (maxBudget * 1.5)))));
+    const budgetScore = Math.max(
+      0,
+      Math.min(100, Math.round(100 * (1 - budgetDiff / (maxBudget * 1.5))))
+    );
 
     // 2. Distance Score
     const maxDist = prefs.maxDistanceKm || 10;
@@ -114,7 +129,8 @@ export class MatchScoringEngine {
     let foodScore = 85;
     if (prefs.foodPreference) {
       if (prefs.foodPreference === 'VEG_ONLY' && pg.foodType === 'VEG_ONLY') foodScore = 100;
-      else if (prefs.foodPreference === 'NON_VEG_ALLOWED' && pg.foodType === 'NON_VEG_ALLOWED') foodScore = 100;
+      else if (prefs.foodPreference === 'NON_VEG_ALLOWED' && pg.foodType === 'NON_VEG_ALLOWED')
+        foodScore = 100;
       else foodScore = 70;
     }
 
@@ -122,14 +138,17 @@ export class MatchScoringEngine {
     let amenitiesScore = 80;
     if (prefs.importantAmenities && prefs.importantAmenities.length > 0 && pg.amenities) {
       const pgAmenityNames = pg.amenities.map((a: any) => a.name.toLowerCase());
-      const matchCount = prefs.importantAmenities.filter((a) =>
+      const matchCount = prefs.importantAmenities.filter(a =>
         pgAmenityNames.some((name: string) => name.includes(a.toLowerCase()))
       ).length;
       amenitiesScore = Math.round((matchCount / prefs.importantAmenities.length) * 100);
     }
 
     // 6. True Cost Score
-    const trueCostScore = trueCost <= maxBudget ? 100 : Math.max(40, Math.round(100 - ((trueCost - maxBudget) / 1000) * 10));
+    const trueCostScore =
+      trueCost <= maxBudget
+        ? 100
+        : Math.max(40, Math.round(100 - ((trueCost - maxBudget) / 1000) * 10));
 
     // 7. Review Score
     const rating = pg.averageRating || 4.5;

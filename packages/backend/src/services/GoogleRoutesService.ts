@@ -34,7 +34,10 @@ export class GoogleRoutesService {
   /**
    * Transparent fare estimation model (explicitly labeled as an estimate).
    */
-  static estimateFare(distanceMeters: number, mode: 'WALKING' | 'DRIVING' | 'TRANSIT'): { estMonthlyCost: number; formula: string } {
+  static estimateFare(
+    distanceMeters: number,
+    mode: 'WALKING' | 'DRIVING' | 'TRANSIT'
+  ): { estMonthlyCost: number; formula: string } {
     const distanceKm = distanceMeters / 1000;
     if (mode === 'WALKING' || distanceKm <= 1.0) {
       return {
@@ -78,7 +81,8 @@ export class GoogleRoutesService {
             headers: {
               'Content-Type': 'application/json',
               'X-Goog-Api-Key': apiKey,
-              'X-Goog-FieldMask': 'originIndex,destinationIndex,status,distanceMeters,duration,condition',
+              'X-Goog-FieldMask':
+                'originIndex,destinationIndex,status,distanceMeters,duration,condition',
             },
             body: JSON.stringify({
               origins: [
@@ -105,7 +109,12 @@ export class GoogleRoutesService {
                   },
                 },
               ],
-              travelMode: preferredMode === 'DRIVING' ? 'DRIVE' : preferredMode === 'TRANSIT' ? 'TRANSIT' : 'WALK',
+              travelMode:
+                preferredMode === 'DRIVING'
+                  ? 'DRIVE'
+                  : preferredMode === 'TRANSIT'
+                    ? 'TRANSIT'
+                    : 'WALK',
             }),
           }
         );

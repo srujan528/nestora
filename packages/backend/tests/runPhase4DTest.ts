@@ -36,7 +36,9 @@ async function runPhase4DVerification() {
   console.log(` - Title: ${topCandidate.title}`);
   console.log(` - Deterministic Match Score: ${topCandidate.matchScore}%`);
   console.log(` - True Monthly Cost: ₹${topCandidate.trueMonthlyCost}`);
-  console.log(` - Distance: ${topCandidate.distanceKm} km (${topCandidate.commuteMins} min ${topCandidate.commuteMode})`);
+  console.log(
+    ` - Distance: ${topCandidate.distanceKm} km (${topCandidate.commuteMins} min ${topCandidate.commuteMode})`
+  );
   console.log(` - Is Demo: ${topCandidate.isDemoData} | Is Verified: ${topCandidate.isVerified}`);
   console.log(` - Evidence References:`, topCandidate.evidenceReferences);
 
@@ -45,7 +47,9 @@ async function runPhase4DVerification() {
   }
 
   if (topCandidate.isDemoData && topCandidate.isVerified !== false) {
-    throw new Error('DEMO Listing Integrity Violation: isVerified must be false for DEMO listings in tRPC response!');
+    throw new Error(
+      'DEMO Listing Integrity Violation: isVerified must be false for DEMO listings in tRPC response!'
+    );
   }
 
   // 3. Test Full System Database Regressions
@@ -57,7 +61,7 @@ async function runPhase4DVerification() {
 }
 
 runPhase4DVerification()
-  .catch((err) => {
+  .catch(err => {
     console.error('❌ Stage 4D Verification Failed:', err);
     process.exit(1);
   })

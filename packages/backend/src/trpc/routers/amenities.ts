@@ -24,7 +24,10 @@ export const amenitiesRouter = {
       }
 
       if (pg.ownerId !== ctx.userId && ctx.user.role !== 'ADMIN') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Not authorized to manage amenities for this PG' });
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Not authorized to manage amenities for this PG',
+        });
       }
 
       await prisma.pGAmenity.deleteMany({ where: { pgId: input.pgId } });

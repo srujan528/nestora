@@ -30,7 +30,8 @@ export class FoodAgent {
 
         const mealOpt = pg.mealOption || 'BREAKFAST_LUNCH_DINNER';
         const breakfastAvailable = mealOpt.includes('BREAKFAST');
-        const lunchAvailable = mealOpt.includes('LUNCH') || mealOpt.includes('BREAKFAST_LUNCH_DINNER');
+        const lunchAvailable =
+          mealOpt.includes('LUNCH') || mealOpt.includes('BREAKFAST_LUNCH_DINNER');
         const dinnerAvailable = mealOpt.includes('DINNER');
 
         if (menu) {

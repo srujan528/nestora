@@ -1,10 +1,7 @@
 import { prisma, User } from '@qrent/shared';
 
 class UserService {
-  async updateProfile(
-    userId: number,
-    profileData: Partial<Pick<User, 'name' | 'phone'>>
-  ) {
+  async updateProfile(userId: number, profileData: Partial<Pick<User, 'name' | 'phone'>>) {
     const updated = await prisma.user.update({
       where: { id: userId },
       data: {

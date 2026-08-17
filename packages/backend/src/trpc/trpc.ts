@@ -114,4 +114,3 @@ export function httpStatusToTrpcCode(statusCode: number): TRPCError['code'] {
   if (statusCode === 422) return 'UNPROCESSABLE_CONTENT';
   return 'INTERNAL_SERVER_ERROR';
 }
-

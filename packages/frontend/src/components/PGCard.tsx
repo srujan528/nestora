@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   HiHeart,
   HiOutlineHeart,
@@ -117,6 +118,8 @@ export default function PGCard({
   const { user } = useAuth();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const locale = useLocale();
+  const t = useTranslations('PGDetails');
 
   const toggleSaveMutation = useMutation(
     trpc.savedPgs.toggle.mutationOptions({
@@ -168,7 +171,7 @@ export default function PGCard({
       {isDemoData && (
         <div className="bg-amber-500 text-slate-950 font-extrabold text-[10px] uppercase tracking-wider py-0.5 px-3 flex items-center justify-center gap-1 z-20">
           <HiExclamationTriangle className="w-3.5 h-3.5" />
-          <span>DEMO LISTING (SEED DATA)</span>
+          <span>{t('demoNotice')}</span>
         </div>
       )}
 
@@ -188,7 +191,7 @@ export default function PGCard({
         <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10">
           <div className="flex items-center gap-1.5">
             <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border backdrop-blur-md shadow-sm ${genderBadgeColor}`}>
-              {genderRestriction === 'BOYS' ? 'Boys PG' : genderRestriction === 'GIRLS' ? 'Girls PG' : 'Co-Ed PG'}
+              {genderRestriction === 'BOYS' ? t('boysPg') : genderRestriction === 'GIRLS' ? t('girlsPg') : t('coedPg')}
             </span>
 
             {/* AI Match Score Placeholder */}
@@ -249,7 +252,7 @@ export default function PGCard({
           <div className="text-right">
             <span className="text-[10px] text-white/80 font-medium">Base Rent</span>
             <p className="text-base font-extrabold text-white">
-              ₹{minRent.toLocaleString()}<span className="text-[10px] font-normal text-white/80">/mo</span>
+              ₹{minRent.toLocaleString()}<span className="text-[10px] font-normal text-white/80">{t('perMonth')}</span>
             </p>
           </div>
         </div>
@@ -264,7 +267,7 @@ export default function PGCard({
             </h3>
             {isVerified && !isDemoData && (
               <span className="shrink-0 flex items-center gap-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                <HiCheckCircle className="w-3 h-3 text-emerald-600" /> Verified
+                <HiCheckCircle className="w-3 h-3 text-emerald-600" /> {t('verifiedPg')}
               </span>
             )}
           </div>
@@ -278,7 +281,7 @@ export default function PGCard({
             <div>
               <span className="text-[10px] uppercase font-black text-amber-300 tracking-wider flex items-center gap-1">
                 <HiCalculator className="w-3.5 h-3.5 text-amber-400" />
-                True Monthly Cost
+                {t('trueMonthlyCost')}
               </span>
               <span className="text-[10px] text-slate-300 font-medium">Rent + Food + Elec + Commute</span>
             </div>
@@ -286,7 +289,7 @@ export default function PGCard({
               <span className="text-base font-black text-amber-300">
                 ₹{trueEstCost.toLocaleString()}
               </span>
-              <span className="text-[10px] font-normal text-slate-300">/mo</span>
+              <span className="text-[10px] font-normal text-slate-300">{t('perMonth')}</span>
             </div>
           </div>
 
@@ -333,26 +336,26 @@ export default function PGCard({
         {/* Action Buttons matching Stanza Living UI */}
         <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-100">
           <Link
-            href={`/pg/${id}#visit`}
+            href={`/${locale}/pg/${id}#visit`}
             className="py-2 px-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-extrabold text-[11px] uppercase tracking-wider text-center transition-all shadow-sm flex items-center justify-center"
           >
-            Schedule A Visit
+            {t('scheduleVisit')}
           </Link>
 
           <Link
-            href={`/pg/${id}#contact`}
+            href={`/${locale}/pg/${id}#contact`}
             className="py-2 px-2.5 rounded-xl border border-teal-600 text-teal-700 hover:bg-teal-50 font-extrabold text-[11px] uppercase tracking-wider text-center transition-all flex items-center justify-center"
           >
-            Request Callback
+            {t('requestCallback')}
           </Link>
         </div>
 
         {/* View Details Link */}
         <Link
-          href={`/pg/${id}`}
+          href={`/${locale}/pg/${id}`}
           className="w-full text-[11px] font-bold text-slate-500 hover:text-blue-600 text-center transition-colors pt-1"
         >
-          View Full Details & True Monthly Cost →
+          {t('viewDetails')} →
         </Link>
       </div>
     </div>

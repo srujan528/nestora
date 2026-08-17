@@ -12,7 +12,9 @@ export const adminRouter = {
     const demoListings = await prisma.pGListing.count({ where: { isDemoData: true } });
     const realListings = await prisma.pGListing.count({ where: { isDemoData: false } });
     const verifiedListings = await prisma.pGListing.count({ where: { isVerified: true } });
-    const pendingVerification = await prisma.pGListing.count({ where: { isVerified: false, isDemoData: false } });
+    const pendingVerification = await prisma.pGListing.count({
+      where: { isVerified: false, isDemoData: false },
+    });
 
     return {
       users: {

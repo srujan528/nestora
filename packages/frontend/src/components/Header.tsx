@@ -85,31 +85,31 @@ export default function Header() {
               </Link>
 
               <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-700">
-                <Link href={`/${locale}`} className="hover:text-blue-600 transition-colors">
-                  Find PGs
+                <Link href={`/${locale}`} className="hover:text-blue-600 transition-colors font-medium">
+                  {t('findPgs')}
                 </Link>
                 {mounted && user?.role === 'STUDENT' && (
                   <>
-                    <Link href={`/${locale}/favorite`} className="hover:text-blue-600 transition-colors flex items-center gap-1.5">
+                    <Link href={`/${locale}/favorite`} className="hover:text-blue-600 transition-colors flex items-center gap-1.5 font-medium">
                       <HiHeart className="w-4 h-4 text-rose-500" />
-                      Saved PGs
+                      {t('savedPgs')}
                     </Link>
-                    <Link href={`/${locale}/student/inquiries`} className="hover:text-blue-600 transition-colors flex items-center gap-1.5">
+                    <Link href={`/${locale}/student/inquiries`} className="hover:text-blue-600 transition-colors flex items-center gap-1.5 font-medium">
                       <HiClipboardDocumentList className="w-4 h-4 text-blue-600" />
-                      My Inquiries
+                      {t('myInquiries')}
                     </Link>
                   </>
                 )}
                 {mounted && user?.role === 'OWNER' && (
                   <Link href={`/${locale}/owner/dashboard`} className="hover:text-blue-600 transition-colors flex items-center gap-1.5 font-semibold text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200">
                     <HiBuildingOffice2 className="w-4 h-4 text-blue-600" />
-                    Owner Dashboard
+                    {t('ownerDashboard')}
                   </Link>
                 )}
                 {mounted && user?.role === 'ADMIN' && (
                   <Link href={`/${locale}/admin`} className="hover:text-amber-600 transition-colors flex items-center gap-1.5 font-semibold text-amber-700 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200">
                     <HiShieldCheck className="w-4 h-4 text-amber-600" />
-                    Admin Panel
+                    {t('adminPanel')}
                   </Link>
                 )}
               </nav>
@@ -125,13 +125,13 @@ export default function Header() {
                     onClick={() => openAuthModal('login')}
                     className="px-4 py-2 text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors rounded-lg hover:bg-slate-50"
                   >
-                    Log In
+                    {t('login')}
                   </button>
                   <button
                     onClick={() => openAuthModal('signup')}
                     className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm shadow-blue-600/20 transition-all hover:shadow-md"
                   >
-                    Sign Up
+                    {t('signup')}
                   </button>
                 </>
               ) : (
@@ -169,7 +169,7 @@ export default function Header() {
                             className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 font-medium"
                           >
                             <HiHeart className="mr-2 h-4 w-4 text-rose-500" />
-                            Saved PGs
+                            {t('savedPgs')}
                           </Link>
                           <Link
                             href={`/${locale}/student/inquiries`}
@@ -177,7 +177,7 @@ export default function Header() {
                             className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 font-medium"
                           >
                             <HiClipboardDocumentList className="mr-2 h-4 w-4 text-blue-600" />
-                            My Inquiries
+                            {t('myInquiries')}
                           </Link>
                         </>
                       )}
@@ -189,7 +189,7 @@ export default function Header() {
                           className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 font-medium"
                         >
                           <HiBuildingOffice2 className="mr-2 h-4 w-4 text-blue-600" />
-                          Owner Dashboard
+                          {t('ownerDashboard')}
                         </Link>
                       )}
 
@@ -200,7 +200,7 @@ export default function Header() {
                           className="flex items-center px-4 py-2.5 text-sm text-amber-800 hover:bg-amber-50 font-medium"
                         >
                           <HiShieldCheck className="mr-2 h-4 w-4 text-amber-600" />
-                          Admin Overview
+                          {t('adminPanel')}
                         </Link>
                       )}
 
@@ -211,7 +211,7 @@ export default function Header() {
                         className="flex items-center w-full px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 transition-colors font-medium"
                       >
                         <HiArrowRightOnRectangle className="mr-2 h-4 w-4" />
-                        Log Out
+                        {t('signout')}
                       </button>
                     </div>
                   )}
@@ -240,7 +240,7 @@ export default function Header() {
           <div className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm" onClick={closeDrawer}></div>
           <aside className="fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-2xl flex flex-col">
             <div className="h-16 flex items-center justify-between px-4 border-b">
-              <Link href="/" onClick={closeDrawer} className="font-bold text-lg text-blue-600 flex items-center gap-2">
+              <Link href={`/${locale}`} onClick={closeDrawer} className="font-bold text-lg text-blue-600 flex items-center gap-2">
                 <HiHome className="w-5 h-5" /> Nestora PGFinder
               </Link>
               <button onClick={closeDrawer} className="p-1 rounded-md text-slate-500 hover:bg-slate-100">
@@ -250,29 +250,29 @@ export default function Header() {
 
             <div className="p-4 space-y-3 flex-1 overflow-y-auto">
               <Link href={`/${locale}`} onClick={closeDrawer} className="block px-3 py-2 rounded-lg font-medium text-slate-800 hover:bg-slate-100">
-                Find PGs
+                {t('findPgs')}
               </Link>
 
               {mounted && user?.role === 'STUDENT' && (
                 <>
                   <Link href={`/${locale}/favorite`} onClick={closeDrawer} className="block px-3 py-2 rounded-lg font-medium text-slate-800 hover:bg-slate-100">
-                    Saved PGs
+                    {t('savedPgs')}
                   </Link>
                   <Link href={`/${locale}/student/inquiries`} onClick={closeDrawer} className="block px-3 py-2 rounded-lg font-medium text-slate-800 hover:bg-slate-100">
-                    My Inquiries
+                    {t('myInquiries')}
                   </Link>
                 </>
               )}
 
               {mounted && user?.role === 'OWNER' && (
                 <Link href={`/${locale}/owner/dashboard`} onClick={closeDrawer} className="block px-3 py-2 rounded-lg font-semibold text-blue-700 bg-blue-50 border border-blue-200">
-                  Owner Dashboard
+                  {t('ownerDashboard')}
                 </Link>
               )}
 
               {mounted && user?.role === 'ADMIN' && (
                 <Link href={`/${locale}/admin`} onClick={closeDrawer} className="block px-3 py-2 rounded-lg font-semibold text-amber-800 bg-amber-50 border border-amber-200">
-                  Admin Panel
+                  {t('adminPanel')}
                 </Link>
               )}
 

@@ -24,7 +24,10 @@ export const weeklyMenuRouter = {
       }
 
       if (pg.ownerId !== ctx.userId && ctx.user.role !== 'ADMIN') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Not authorized to manage menu for this PG' });
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Not authorized to manage menu for this PG',
+        });
       }
 
       const { pgId, ...menuData } = input;

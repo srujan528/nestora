@@ -3,7 +3,14 @@ import { TRPCError } from '@trpc/server';
 import { studentProcedure, ownerProcedure } from '../trpc';
 import { prisma } from '@qrent/shared';
 
-const roomTypeEnum = z.enum(['SINGLE', 'DOUBLE_SHARING', 'TRIPLE_SHARING', 'FOUR_SHARING', 'PRIVATE_ROOM', 'FULL_FLAT']);
+const roomTypeEnum = z.enum([
+  'SINGLE',
+  'DOUBLE_SHARING',
+  'TRIPLE_SHARING',
+  'FOUR_SHARING',
+  'PRIVATE_ROOM',
+  'FULL_FLAT',
+]);
 const inquiryStatusEnum = z.enum(['PENDING', 'CONTACTED', 'SCHEDULED_VISIT', 'CLOSED']);
 
 export const inquiriesRouter = {
@@ -88,7 +95,10 @@ export const inquiriesRouter = {
       }
 
       if (inquiry.pg.ownerId !== ctx.userId && ctx.user.role !== 'ADMIN') {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Not authorized to manage this inquiry' });
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Not authorized to manage this inquiry',
+        });
       }
 
       const updated = await prisma.inquiry.update({

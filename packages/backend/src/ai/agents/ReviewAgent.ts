@@ -32,7 +32,8 @@ export class ReviewAgent {
 
         if (reviews.length > 0) {
           const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
-          const avgClean = reviews.reduce((sum, r) => sum + r.cleanlinessRating, 0) / reviews.length;
+          const avgClean =
+            reviews.reduce((sum, r) => sum + r.cleanlinessRating, 0) / reviews.length;
           const avgFood = reviews.reduce((sum, r) => sum + r.foodRating, 0) / reviews.length;
           const avgWifi = reviews.reduce((sum, r) => sum + r.wifiRating, 0) / reviews.length;
           const avgSec = reviews.reduce((sum, r) => sum + r.securityRating, 0) / reviews.length;
@@ -57,7 +58,7 @@ export class ReviewAgent {
             },
             positiveThemes,
             negativeThemes,
-            supportingReviewIds: reviews.map((r) => r.id),
+            supportingReviewIds: reviews.map(r => r.id),
             summaryNote: `${reviews.length} student reviews found with ${avgRating.toFixed(1)}/5.0 average rating.`,
           };
         } else {

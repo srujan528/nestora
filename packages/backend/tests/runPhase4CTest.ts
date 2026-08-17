@@ -17,8 +17,14 @@ async function runPhase4CVerification() {
   console.log('🚀 Starting Stage 4C Specialized Intelligence Agents Verification...');
 
   // Initialize candidate state
-  let state = createInitialAgentState('Give me the best PG for me near DU North Campus under ₹12,000');
-  state = await LangGraphRunner.runRecommendationPipeline(state.naturalLanguageRequest, undefined, 1);
+  let state = createInitialAgentState(
+    'Give me the best PG for me near DU North Campus under ₹12,000'
+  );
+  state = await LangGraphRunner.runRecommendationPipeline(
+    state.naturalLanguageRequest,
+    undefined,
+    1
+  );
 
   const candidates = state.candidatePGs;
   if (candidates.length === 0) throw new Error('No candidate PGs found for testing!');
@@ -29,7 +35,9 @@ async function runPhase4CVerification() {
   const commuteInfo = Object.values(commuteState.commuteResults || {})[0];
 
   console.log(`✅ Commute Output for PG #${commuteInfo?.pgId}:`);
-  console.log(` - Distance: ${commuteInfo?.distanceKm} km | Duration: ${commuteInfo?.commuteTimeMins} mins (${commuteInfo?.commuteMode})`);
+  console.log(
+    ` - Distance: ${commuteInfo?.distanceKm} km | Duration: ${commuteInfo?.commuteTimeMins} mins (${commuteInfo?.commuteMode})`
+  );
   console.log(` - Commute Cost Est: ${commuteInfo?.commuteFareFormula}`);
   console.log(` - Status: ${commuteInfo?.statusMessage}`);
 
@@ -53,7 +61,9 @@ async function runPhase4CVerification() {
   const reviewInfo = Object.values(reviewState.reviewAnalysis || {})[0];
 
   console.log(`✅ Review Output for PG #${reviewInfo?.pgId}:`);
-  console.log(` - Review Count: ${reviewInfo?.reviewCount} | Avg Rating: ${reviewInfo?.averageRating}/5.0`);
+  console.log(
+    ` - Review Count: ${reviewInfo?.reviewCount} | Avg Rating: ${reviewInfo?.averageRating}/5.0`
+  );
   console.log(` - Category Scores:`, reviewInfo?.categoryScores);
   console.log(` - Positive Themes:`, reviewInfo?.positiveThemes);
   console.log(` - Supporting Review IDs:`, reviewInfo?.supportingReviewIds);
@@ -66,7 +76,9 @@ async function runPhase4CVerification() {
   const costInfo = Object.values(costState.costAnalysis || {})[0];
 
   console.log(`✅ Cost Analyst Output for PG #${costInfo?.pgId}:`);
-  console.log(` - Total Monthly Cost: ₹${costInfo?.totalMonthlyCost} | Annual Est: ₹${costInfo?.estimatedAnnualCost}`);
+  console.log(
+    ` - Total Monthly Cost: ₹${costInfo?.totalMonthlyCost} | Annual Est: ₹${costInfo?.estimatedAnnualCost}`
+  );
   console.log(` - Within Budget: ${costInfo?.withinBudget} (${costInfo?.statusMessage})`);
   console.log(` - Known Costs:`, costInfo?.knownCosts);
   console.log(` - Estimated Costs:`, costInfo?.estimatedCosts);
@@ -79,45 +91,67 @@ async function runPhase4CVerification() {
   const verifInfo = Object.values(verifState.verificationResults || {})[0];
 
   console.log(`✅ Verification Output for PG #${verifInfo?.pgId}:`);
-  console.log(` - State: ${verifInfo?.verificationState} | Is Verified: ${verifInfo?.isVerified} | Is Demo: ${verifInfo?.isDemoData}`);
+  console.log(
+    ` - State: ${verifInfo?.verificationState} | Is Verified: ${verifInfo?.isVerified} | Is Demo: ${verifInfo?.isDemoData}`
+  );
   console.log(` - Completeness Score: ${verifInfo?.completenessScore}%`);
   console.log(` - Trust Summary: ${verifInfo?.trustSummary}`);
   console.log(` - Warnings:`, verifInfo?.warnings);
 
   if (verifInfo?.isDemoData) {
     if (verifInfo.isVerified !== false) {
-      throw new Error('DEMO Listing Integrity Violation: isVerified must be false when isDemoData is true!');
+      throw new Error(
+        'DEMO Listing Integrity Violation: isVerified must be false when isDemoData is true!'
+      );
     }
     if (verifInfo.verificationState !== 'DEMO_SEED_DATA') {
-      throw new Error('DEMO Listing Integrity Violation: verificationState must be DEMO_SEED_DATA for demo listings!');
+      throw new Error(
+        'DEMO Listing Integrity Violation: verificationState must be DEMO_SEED_DATA for demo listings!'
+      );
     }
   }
 
   // Regression check on final recommendation output for DEMO listings
-  const demoCandidate = state.finalRecommendations?.rankedCandidates.find((c) => c.isDemoData);
+  const demoCandidate = state.finalRecommendations?.rankedCandidates.find(c => c.isDemoData);
   if (demoCandidate && demoCandidate.isVerified !== false) {
-    throw new Error('DEMO Listing Integrity Violation: Recommendation candidate isVerified must be false for DEMO listings!');
+    throw new Error(
+      'DEMO Listing Integrity Violation: Recommendation candidate isVerified must be false for DEMO listings!'
+    );
   }
 
   // 6. Test Supervisor Router Dynamic Intent Dispatch
   console.log('\n6️⃣ Testing Supervisor Router Dynamic Intent Dispatch...');
-  const comprehensiveRoute = await SupervisorRouter.route(createInitialAgentState('Give me the best PG for me near DU North Campus'));
-  const verificationRoute = await SupervisorRouter.route(createInitialAgentState('Is this PG trustworthy and verified?'));
+  const comprehensiveRoute = await SupervisorRouter.route(
+    createInitialAgentState('Give me the best PG for me near DU North Campus')
+  );
+  const verificationRoute = await SupervisorRouter.route(
+    createInitialAgentState('Is this PG trustworthy and verified?')
+  );
 
   console.log(`✅ Comprehensive Route Agents: [${comprehensiveRoute.requiredAgents.join(', ')}]`);
   console.log(`✅ Verification Route Agents: [${verificationRoute.requiredAgents.join(', ')}]`);
 
-  if (!comprehensiveRoute.requiredAgents.includes('FOOD') || !comprehensiveRoute.requiredAgents.includes('VERIFICATION')) {
+  if (
+    !comprehensiveRoute.requiredAgents.includes('FOOD') ||
+    !comprehensiveRoute.requiredAgents.includes('VERIFICATION')
+  ) {
     throw new Error('Supervisor failed to dispatch specialized agents for comprehensive query!');
   }
 
   // 7. Test Failure Isolation
   console.log('\n7️⃣ Testing Pipeline Failure Isolation...');
   const failedState = await LangGraphRunner.runRecommendationPipeline('Test query with food focus');
-  console.log(`✅ Pipeline executed with ${failedState.warnings.length} warnings and ${failedState.errors.length} errors.`);
-  console.log(` - Recommendations generated: ${failedState.finalRecommendations?.rankedCandidates.length} candidates.`);
+  console.log(
+    `✅ Pipeline executed with ${failedState.warnings.length} warnings and ${failedState.errors.length} errors.`
+  );
+  console.log(
+    ` - Recommendations generated: ${failedState.finalRecommendations?.rankedCandidates.length} candidates.`
+  );
 
-  if (!failedState.finalRecommendations || failedState.finalRecommendations.rankedCandidates.length === 0) {
+  if (
+    !failedState.finalRecommendations ||
+    failedState.finalRecommendations.rankedCandidates.length === 0
+  ) {
     throw new Error('Pipeline failed to isolate non-critical agent warnings!');
   }
 
@@ -130,7 +164,7 @@ async function runPhase4CVerification() {
 }
 
 runPhase4CVerification()
-  .catch((err) => {
+  .catch(err => {
     console.error('❌ Stage 4C Verification Failed:', err);
     process.exit(1);
   })

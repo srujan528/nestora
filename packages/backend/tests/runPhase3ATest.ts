@@ -21,7 +21,7 @@ async function runPhase3AVerification() {
 
   const colleges = await publicCaller.colleges.list();
   console.log(`✅ Fetched ${colleges.length} Colleges:`);
-  colleges.forEach((c) => {
+  colleges.forEach(c => {
     console.log(` - ${c.name} (${c.city}): Lat ${c.latitude}, Lng ${c.longitude}`);
   });
   if (colleges.length === 0) throw new Error('No colleges returned!');
@@ -31,11 +31,17 @@ async function runPhase3AVerification() {
   const duCoords = { latitude: 28.6904, longitude: 77.2066 }; // DU North Campus
   const pgCoords = { latitude: 28.6945, longitude: 77.2099 }; // Kamla Nagar PG
 
-  const routeResult = await GoogleRoutesService.computeDistanceAndCommute(duCoords, pgCoords, 'WALKING');
+  const routeResult = await GoogleRoutesService.computeDistanceAndCommute(
+    duCoords,
+    pgCoords,
+    'WALKING'
+  );
   console.log('✅ Route Computation Result:');
   console.log(` - Distance: ${routeResult.distanceKm} km (${routeResult.distanceMeters} m)`);
   console.log(` - Commute Time: ${routeResult.commuteTimeMins} mins (${routeResult.commuteMode})`);
-  console.log(` - Fare Estimate: ${routeResult.commuteFareFormula} (Est. Monthly: ₹${routeResult.commuteCostEstMonthly})`);
+  console.log(
+    ` - Fare Estimate: ${routeResult.commuteFareFormula} (Est. Monthly: ₹${routeResult.commuteCostEstMonthly})`
+  );
   console.log(` - Source: ${routeResult.source}`);
 
   if (routeResult.distanceKm <= 0 || routeResult.commuteTimeMins <= 0) {
@@ -51,9 +57,13 @@ async function runPhase3AVerification() {
     pageSize: 20,
   });
 
-  console.log(`✅ Discovery Search returned ${discoveryResult.total} PGs within 5 km of ${discoveryResult.selectedCollege?.name}:`);
+  console.log(
+    `✅ Discovery Search returned ${discoveryResult.total} PGs within 5 km of ${discoveryResult.selectedCollege?.name}:`
+  );
   discoveryResult.pgs.forEach((pg: any) => {
-    console.log(` - [${pg.title}] | Rent: ₹${pg.minRent} | Distance: ${pg.distanceKm} km | Commute: ${pg.commuteTimeMins} min | AI Match: ${pg.aiMatchScore}%`);
+    console.log(
+      ` - [${pg.title}] | Rent: ₹${pg.minRent} | Distance: ${pg.distanceKm} km | Commute: ${pg.commuteTimeMins} min | AI Match: ${pg.aiMatchScore}%`
+    );
   });
 
   if (discoveryResult.pgs.length === 0) throw new Error('No PGs found in discovery search!');
@@ -67,7 +77,9 @@ async function runPhase3AVerification() {
   console.log(`✅ Found ${strictResult.total} PGs strictly within 2 km radius.`);
   strictResult.pgs.forEach((pg: any) => {
     if (pg.distanceKm > 2.0) {
-      throw new Error(`PG ${pg.title} exceeded distance filter limit (${pg.distanceKm} km > 2.0 km)`);
+      throw new Error(
+        `PG ${pg.title} exceeded distance filter limit (${pg.distanceKm} km > 2.0 km)`
+      );
     }
   });
 
@@ -124,13 +136,15 @@ async function runPhase3AVerification() {
 
   // Verify Admin Overview
   const adminOverview = await adminCaller.admin.getOverview();
-  console.log(`✅ Admin Overview Regression: Total Users = ${adminOverview.users.total}, Total Listings = ${adminOverview.listings.total}`);
+  console.log(
+    `✅ Admin Overview Regression: Total Users = ${adminOverview.users.total}, Total Listings = ${adminOverview.listings.total}`
+  );
 
   console.log('\n🎉 ALL PHASE 3A VERIFICATION TESTS PASSED SUCCESSFULLY!');
 }
 
 runPhase3AVerification()
-  .catch((err) => {
+  .catch(err => {
     console.error('❌ Phase 3A Verification Failed:', err);
     process.exit(1);
   })

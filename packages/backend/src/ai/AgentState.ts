@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
 export interface PriorityWeights {
-  budget: number;       // Default 0.25
-  distance: number;     // Default 0.20
-  roomSharing: number;  // Default 0.15
-  food: number;         // Default 0.15
-  amenities: number;    // Default 0.10
-  trueCost: number;     // Default 0.10
-  reviews: number;      // Default 0.05
+  budget: number; // Default 0.25
+  distance: number; // Default 0.20
+  roomSharing: number; // Default 0.15
+  food: number; // Default 0.15
+  amenities: number; // Default 0.10
+  trueCost: number; // Default 0.10
+  reviews: number; // Default 0.05
 }
 
 export interface StudentPreferences {
@@ -105,11 +105,11 @@ export function createInitialAgentState(requestText: string, studentId?: number)
     studentPreferences: {
       priorityWeights: {
         budget: 0.25,
-        distance: 0.20,
+        distance: 0.2,
         roomSharing: 0.15,
         food: 0.15,
-        amenities: 0.10,
-        trueCost: 0.10,
+        amenities: 0.1,
+        trueCost: 0.1,
         reviews: 0.05,
       },
     },

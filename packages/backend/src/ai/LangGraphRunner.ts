@@ -13,12 +13,16 @@ export class LangGraphRunner {
   /**
    * Runs the Supervisor pass.
    */
-  static async runInitialSupervisorPass(requestText: string, studentId?: number): Promise<AgentState> {
+  static async runInitialSupervisorPass(
+    requestText: string,
+    studentId?: number
+  ): Promise<AgentState> {
     const state = createInitialAgentState(requestText, studentId);
     const routingDecision = await SupervisorRouter.route(state);
 
     state.requiredAgentsToRun = routingDecision.requiredAgents;
-    state.executionMetadata.agentTimings['SUPERVISOR'] = Date.now() - state.executionMetadata.startTime;
+    state.executionMetadata.agentTimings['SUPERVISOR'] =
+      Date.now() - state.executionMetadata.startTime;
 
     return state;
   }
@@ -26,7 +30,11 @@ export class LangGraphRunner {
   /**
    * Executes the Stage 4C Multi-Agent Workflow with Failure Isolation & Conditional Routing.
    */
-  static async runRecommendationPipeline(requestText: string, studentId?: number, collegeId?: number): Promise<AgentState> {
+  static async runRecommendationPipeline(
+    requestText: string,
+    studentId?: number,
+    collegeId?: number
+  ): Promise<AgentState> {
     // 1. Initialize State & Supervisor Pass
     let state = await this.runInitialSupervisorPass(requestText, studentId);
 

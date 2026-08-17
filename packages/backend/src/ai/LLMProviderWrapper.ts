@@ -21,15 +21,26 @@ export class MockLLMProvider implements ILLMProvider {
     // Return structured mock outputs for prompt intents
     if (schemaDescription.includes('StudentPreferences')) {
       const promptLower = prompt.toLowerCase();
-      const budgetMatch = promptLower.match(/\b(\d{1,2})\s*k\b/i) ||
-                          promptLower.match(/(?:under|budget|max|around|₹|\$)\s*(\d{4,5})\b/i);
-      const budgetVal = budgetMatch ? (parseInt(budgetMatch[1], 10) < 100 ? parseInt(budgetMatch[1], 10) * 1000 : parseInt(budgetMatch[1], 10)) : undefined;
+      const budgetMatch =
+        promptLower.match(/\b(\d{1,2})\s*k\b/i) ||
+        promptLower.match(/(?:under|budget|max|around|₹|\$)\s*(\d{4,5})\b/i);
+      const budgetVal = budgetMatch
+        ? parseInt(budgetMatch[1], 10) < 100
+          ? parseInt(budgetMatch[1], 10) * 1000
+          : parseInt(budgetMatch[1], 10)
+        : undefined;
 
       return {
         minBudget: 5000,
         maxBudget: budgetVal || (promptLower.includes('sparse') ? undefined : 15000),
         preferredRoomType: promptLower.includes('single') ? 'SINGLE' : 'DOUBLE_SHARING',
-        genderRestriction: promptLower.includes('boy') ? 'BOYS' : promptLower.includes('girl') ? 'GIRLS' : promptLower.includes('co-ed') ? 'CO_ED' : undefined,
+        genderRestriction: promptLower.includes('boy')
+          ? 'BOYS'
+          : promptLower.includes('girl')
+            ? 'GIRLS'
+            : promptLower.includes('co-ed')
+              ? 'CO_ED'
+              : undefined,
         foodPreference: promptLower.includes('veg') ? 'VEG_ONLY' : undefined,
         acRequired: promptLower.includes('ac') && !promptLower.includes('non-ac'),
         maxCommuteMins: 20,
@@ -87,7 +98,10 @@ export class GeminiLLMProvider implements ILLMProvider {
     const jsonPrompt = `${prompt}\n\nReturn ONLY a valid JSON object matching this schema description:\n${schemaDescription}\nDo NOT include markdown formatting or backticks.`;
     const text = await this.generateCompletion(jsonPrompt);
     try {
-      const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
+      const cleanJson = text
+        .replace(/```json/g, '')
+        .replace(/```/g, '')
+        .trim();
       return JSON.parse(cleanJson);
     } catch {
       return new MockLLMProvider().generateStructuredJSON<T>(prompt, schemaDescription);

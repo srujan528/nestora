@@ -18,7 +18,7 @@ export interface TrueCostBreakdown {
 
 export function calculateTrueMonthlyCost(pg: PGCostFactors): TrueCostBreakdown {
   const baseRent = pg.minRent || 0;
-  const foodCost = pg.foodIncludedInRent ? 0 : (pg.extraFoodCharges || 0);
+  const foodCost = pg.foodIncludedInRent ? 0 : pg.extraFoodCharges || 0;
   const electricityCost = pg.estElectricityMonthly || 800;
   const maintenanceCost = pg.estMaintenanceMonthly || 0;
   const commuteCost = pg.commuteCostEstMonthly || 0;

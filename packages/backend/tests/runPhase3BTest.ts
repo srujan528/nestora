@@ -29,7 +29,9 @@ async function runPhase3BVerification() {
   console.log(` - Total True Monthly Cost: ₹${testBreakdown.totalMonthlyCost}`);
 
   if (testBreakdown.totalMonthlyCost !== 10300) {
-    throw new Error(`Cost calculation mismatch: expected 10300, got ${testBreakdown.totalMonthlyCost}`);
+    throw new Error(
+      `Cost calculation mismatch: expected 10300, got ${testBreakdown.totalMonthlyCost}`
+    );
   }
 
   // 2. Test tRPC pgs.list Enriched True Monthly Cost Output
@@ -47,7 +49,9 @@ async function runPhase3BVerification() {
 
   console.log(`✅ Fetched ${discoveryResult.total} PGs enriched with True Monthly Cost:`);
   discoveryResult.pgs.forEach((pg: any) => {
-    console.log(` - [${pg.title}] | Base Rent: ₹${pg.minRent} | True Monthly Cost: ₹${pg.trueMonthlyCost} | Commute: ₹${pg.commuteCostEstMonthly}`);
+    console.log(
+      ` - [${pg.title}] | Base Rent: ₹${pg.minRent} | True Monthly Cost: ₹${pg.trueMonthlyCost} | Commute: ₹${pg.commuteCostEstMonthly}`
+    );
     if (!pg.trueMonthlyCost || !pg.trueMonthlyCostBreakdown) {
       throw new Error(`PG ${pg.title} missing trueMonthlyCost payload!`);
     }
@@ -72,7 +76,9 @@ async function runPhase3BVerification() {
     const compareSet = discoveryResult.pgs.slice(0, 2);
     console.log(`✅ Side-by-Side Comparison Payload (${compareSet.length} PGs):`);
     compareSet.forEach((p: any, idx: number) => {
-      console.log(` PG ${idx + 1}: ${p.title} | True Cost: ₹${p.trueMonthlyCost} | Beds Open: ${p.rooms?.reduce((acc: number, r: any) => acc + r.availableBeds, 0)}`);
+      console.log(
+        ` PG ${idx + 1}: ${p.title} | True Cost: ₹${p.trueMonthlyCost} | Beds Open: ${p.rooms?.reduce((acc: number, r: any) => acc + r.availableBeds, 0)}`
+      );
     });
   }
 
@@ -88,13 +94,15 @@ async function runPhase3BVerification() {
   });
 
   const adminOverview = await adminCaller.admin.getOverview();
-  console.log(`✅ Admin Overview Regression: Total Users = ${adminOverview.users.total}, Total Listings = ${adminOverview.listings.total}`);
+  console.log(
+    `✅ Admin Overview Regression: Total Users = ${adminOverview.users.total}, Total Listings = ${adminOverview.listings.total}`
+  );
 
   console.log('\n🎉 ALL PHASE 3B VERIFICATION TESTS PASSED SUCCESSFULLY!');
 }
 
 runPhase3BVerification()
-  .catch((err) => {
+  .catch(err => {
     console.error('❌ Phase 3B Verification Failed:', err);
     process.exit(1);
   })

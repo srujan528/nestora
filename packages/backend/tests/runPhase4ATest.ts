@@ -24,8 +24,10 @@ async function runPhase4AVerification() {
   });
 
   console.log(`✅ PGSearchService returned ${searchResult.total} listings:`);
-  searchResult.pgs.forEach((pg) => {
-    console.log(` - [${pg.title}] | Rent: ₹${pg.minRent} | True Cost: ₹${pg.trueMonthlyCost} | Distance: ${pg.distanceKm}km`);
+  searchResult.pgs.forEach(pg => {
+    console.log(
+      ` - [${pg.title}] | Rent: ₹${pg.minRent} | True Cost: ₹${pg.trueMonthlyCost} | Distance: ${pg.distanceKm}km`
+    );
   });
 
   if (searchResult.pgs.length === 0) throw new Error('PGSearchService returned empty listings!');
@@ -63,7 +65,9 @@ async function runPhase4AVerification() {
     ...samplePrefs,
     genderRestriction: samplePg.genderRestriction === 'GIRLS' ? 'BOYS' : 'GIRLS',
   });
-  console.log(`✅ Hard Constraint Test (Gender Mismatch): Passed = ${failedConstraintResult.hardConstraintsPassed}, Score = ${failedConstraintResult.totalScore}`);
+  console.log(
+    `✅ Hard Constraint Test (Gender Mismatch): Passed = ${failedConstraintResult.hardConstraintsPassed}, Score = ${failedConstraintResult.totalScore}`
+  );
   if (failedConstraintResult.hardConstraintsPassed) {
     throw new Error('Hard constraint evaluation failed to block incompatible gender restriction!');
   }
@@ -79,15 +83,23 @@ async function runPhase4AVerification() {
   console.log('\n4️⃣ Testing SupervisorRouter Intent Classification...');
   const generalState = createInitialAgentState('Find me a PG near DU North Campus under ₹10,000');
   const foodState = createInitialAgentState('Which PG has the best veg mess menu?');
-  const commuteState = createInitialAgentState('Show me PGs within 10 min walking commute to IIT Bombay');
+  const commuteState = createInitialAgentState(
+    'Show me PGs within 10 min walking commute to IIT Bombay'
+  );
 
   const generalRoute = await SupervisorRouter.route(generalState);
   const foodRoute = await SupervisorRouter.route(foodState);
   const commuteRoute = await SupervisorRouter.route(commuteState);
 
-  console.log(`✅ General Query Intent: ${generalRoute.intent} -> Agents: [${generalRoute.requiredAgents.join(', ')}]`);
-  console.log(`✅ Food Query Intent: ${foodRoute.intent} -> Agents: [${foodRoute.requiredAgents.join(', ')}]`);
-  console.log(`✅ Commute Query Intent: ${commuteRoute.intent} -> Agents: [${commuteRoute.requiredAgents.join(', ')}]`);
+  console.log(
+    `✅ General Query Intent: ${generalRoute.intent} -> Agents: [${generalRoute.requiredAgents.join(', ')}]`
+  );
+  console.log(
+    `✅ Food Query Intent: ${foodRoute.intent} -> Agents: [${foodRoute.requiredAgents.join(', ')}]`
+  );
+  console.log(
+    `✅ Commute Query Intent: ${commuteRoute.intent} -> Agents: [${commuteRoute.requiredAgents.join(', ')}]`
+  );
 
   if (!foodRoute.requiredAgents.includes('FOOD')) {
     throw new Error('Supervisor failed to route food query to FOOD agent!');
@@ -98,10 +110,14 @@ async function runPhase4AVerification() {
 
   // 5. Test LangGraphRunner Foundation Pass
   console.log('\n5️⃣ Testing LangGraphRunner Workflow Initialization...');
-  const initialGraphState = await LangGraphRunner.runInitialSupervisorPass('Find student accommodation near Christ University');
+  const initialGraphState = await LangGraphRunner.runInitialSupervisorPass(
+    'Find student accommodation near Christ University'
+  );
   console.log(`✅ Workflow ID: ${initialGraphState.workflowId}`);
   console.log(` - Required Agents: [${initialGraphState.requiredAgentsToRun.join(', ')}]`);
-  console.log(` - Execution Timing: ${initialGraphState.executionMetadata.agentTimings['SUPERVISOR']}ms`);
+  console.log(
+    ` - Execution Timing: ${initialGraphState.executionMetadata.agentTimings['SUPERVISOR']}ms`
+  );
 
   // 6. Test Phase 1-3B Regressions
   console.log('\n6️⃣ Verifying System Regressions...');
@@ -115,7 +131,7 @@ async function runPhase4AVerification() {
 }
 
 runPhase4AVerification()
-  .catch((err) => {
+  .catch(err => {
     console.error('❌ Stage 4A Verification Failed:', err);
     process.exit(1);
   })

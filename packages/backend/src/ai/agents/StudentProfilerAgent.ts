@@ -11,9 +11,10 @@ export class StudentProfilerAgent {
     const extracted: Partial<StudentPreferences> = {};
 
     // Budget extraction (e.g. "10k", "10,000", "₹12000", "under 15000")
-    const budgetMatch = prompt.match(/\b(\d{1,2})\s*k\b/i) ||
-                        prompt.match(/(?:under|budget|max|around|₹|\$)\s*(\d{4,5})\b/i) ||
-                        prompt.match(/\b(\d{4,5})\b/);
+    const budgetMatch =
+      prompt.match(/\b(\d{1,2})\s*k\b/i) ||
+      prompt.match(/(?:under|budget|max|around|₹|\$)\s*(\d{4,5})\b/i) ||
+      prompt.match(/\b(\d{4,5})\b/);
     if (budgetMatch) {
       const val = parseInt(budgetMatch[1], 10);
       extracted.maxBudget = val < 100 ? val * 1000 : val;
@@ -27,12 +28,16 @@ export class StudentProfilerAgent {
 
     // Gender restriction
     if (prompt.includes('boys') || prompt.includes('boy')) extracted.genderRestriction = 'BOYS';
-    else if (prompt.includes('girls') || prompt.includes('girl')) extracted.genderRestriction = 'GIRLS';
-    else if (prompt.includes('co-ed') || prompt.includes('coed')) extracted.genderRestriction = 'CO_ED';
+    else if (prompt.includes('girls') || prompt.includes('girl'))
+      extracted.genderRestriction = 'GIRLS';
+    else if (prompt.includes('co-ed') || prompt.includes('coed'))
+      extracted.genderRestriction = 'CO_ED';
 
     // Food preference
-    if (prompt.includes('veg') || prompt.includes('vegetarian')) extracted.foodPreference = 'VEG_ONLY';
-    else if (prompt.includes('non-veg') || prompt.includes('non veg')) extracted.foodPreference = 'NON_VEG_ALLOWED';
+    if (prompt.includes('veg') || prompt.includes('vegetarian'))
+      extracted.foodPreference = 'VEG_ONLY';
+    else if (prompt.includes('non-veg') || prompt.includes('non veg'))
+      extracted.foodPreference = 'NON_VEG_ALLOWED';
 
     // AC requirement
     if (prompt.includes('ac') && !prompt.includes('non-ac') && !prompt.includes('non ac')) {
@@ -70,7 +75,8 @@ export class StudentProfilerAgent {
           prefs.targetCollegeName = storedProfile.college?.name || prefs.targetCollegeName;
           prefs.minBudget = storedProfile.minBudget || prefs.minBudget;
           prefs.maxBudget = storedProfile.maxBudget || prefs.maxBudget;
-          prefs.preferredRoomType = (storedProfile.preferredSharing as any) || prefs.preferredRoomType;
+          prefs.preferredRoomType =
+            (storedProfile.preferredSharing as any) || prefs.preferredRoomType;
           prefs.foodPreference = (storedProfile.foodPreference as any) || prefs.foodPreference;
           prefs.acRequired = storedProfile.acRequired ?? prefs.acRequired;
           prefs.maxCommuteMins = storedProfile.maxCommuteTimeMins || prefs.maxCommuteMins;
@@ -108,8 +114,10 @@ export class StudentProfilerAgent {
     // Always re-apply deterministic parse to guarantee prompt overrides stored profile
     const promptOverrides = this.parsePreferencesFromPrompt(state.naturalLanguageRequest);
     if (promptOverrides.maxBudget) prefs.maxBudget = promptOverrides.maxBudget;
-    if (promptOverrides.preferredRoomType) prefs.preferredRoomType = promptOverrides.preferredRoomType;
-    if (promptOverrides.genderRestriction) prefs.genderRestriction = promptOverrides.genderRestriction;
+    if (promptOverrides.preferredRoomType)
+      prefs.preferredRoomType = promptOverrides.preferredRoomType;
+    if (promptOverrides.genderRestriction)
+      prefs.genderRestriction = promptOverrides.genderRestriction;
     if (promptOverrides.foodPreference) prefs.foodPreference = promptOverrides.foodPreference;
     if (promptOverrides.acRequired !== undefined) prefs.acRequired = promptOverrides.acRequired;
     if (promptOverrides.maxCommuteMins) prefs.maxCommuteMins = promptOverrides.maxCommuteMins;
@@ -119,7 +127,7 @@ export class StudentProfilerAgent {
       const colleges = await prisma.college.findMany();
       const promptLower = state.naturalLanguageRequest.toLowerCase();
       const matched = colleges.find(
-        (c) =>
+        c =>
           promptLower.includes(c.name.toLowerCase()) ||
           (c.shortName && promptLower.includes(c.shortName.toLowerCase())) ||
           promptLower.includes(c.city.toLowerCase())

@@ -1,6 +1,7 @@
 'use client';
 
 import { use, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTRPC } from '@/lib/trpc';
 import { useAuth } from '@/hooks/use-auth';
@@ -31,6 +32,7 @@ export default function PGDetailsPage({ params }: { params: Promise<{ id: string
   const trpc = useTRPC();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const t = useTranslations('PGDetails');
 
   const [activePhotoCategory, setActivePhotoCategory] = useState<string>('ALL');
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number>(0);
@@ -110,13 +112,24 @@ export default function PGDetailsPage({ params }: { params: Promise<{ id: string
 
   const activePhoto = filteredPhotos[selectedPhotoIndex] || pg.photos[0];
 
+  const categoryLabels: Record<string, string> = {
+    ALL: t('all'),
+    ROOM: t('room'),
+    BATHROOM: t('bathroom'),
+    KITCHEN: t('kitchen'),
+    DINING: t('dining'),
+    COMMON_AREA: t('commonArea'),
+    EXTERIOR: t('exterior'),
+    BUILDING: t('building'),
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
       {/* Demo Banner */}
       {pg.isDemoData && (
         <div className="bg-amber-500 text-slate-950 font-extrabold text-xs uppercase tracking-wider py-2 px-4 flex items-center justify-center gap-2 shadow-md">
           <HiExclamationTriangle className="w-4 h-4" />
-          <span>DEMO LISTING (SEED DATA ONLY — NOT REAL CUSTOMER DATA)</span>
+          <span>{t('demoNotice')}</span>
         </div>
       )}
 
@@ -126,11 +139,11 @@ export default function PGDetailsPage({ params }: { params: Promise<{ id: string
           <div>
             <div className="flex items-center gap-2">
               <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">
-                {pg.genderRestriction === 'BOYS' ? 'Boys PG' : pg.genderRestriction === 'GIRLS' ? 'Girls PG' : 'Co-Ed PG'}
+                {pg.genderRestriction === 'BOYS' ? t('boysPg') : pg.genderRestriction === 'GIRLS' ? t('girlsPg') : t('coedPg')}
               </span>
               {pg.isVerified && (
                 <span className="flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                  <HiCheckCircle className="w-4 h-4 text-emerald-600" /> Verified PG
+                  <HiCheckCircle className="w-4 h-4 text-emerald-600" /> {t('verifiedPg')}
                 </span>
               )}
             </div>
@@ -146,12 +159,12 @@ export default function PGDetailsPage({ params }: { params: Promise<{ id: string
           {/* Price Card & Actions */}
           <div className="w-full md:w-auto flex items-center justify-between md:justify-end gap-4 border-t md:border-t-0 pt-4 md:pt-0 border-slate-100">
             <div className="text-left md:text-right">
-              <span className="text-xs text-slate-500 font-medium">Monthly Rent Range</span>
+              <span className="text-xs text-slate-500 font-medium">{t('monthlyRentRange')}</span>
               <p className="text-2xl font-extrabold text-blue-700">
                 ₹{pg.minRent.toLocaleString()} – ₹{pg.maxRent.toLocaleString()}
-                <span className="text-xs font-normal text-slate-500"> /mo</span>
+                <span className="text-xs font-normal text-slate-500"> {t('perMonth')}</span>
               </p>
-              <p className="text-[11px] text-slate-500 font-medium">Security Deposit: ₹{pg.securityDeposit.toLocaleString()}</p>
+              <p className="text-[11px] text-slate-500 font-medium">{t('securityDeposit')}: ₹{pg.securityDeposit.toLocaleString()}</p>
             </div>
 
             <div className="flex items-center gap-2">
@@ -168,7 +181,7 @@ export default function PGDetailsPage({ params }: { params: Promise<{ id: string
                 className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-600/20 flex items-center gap-1.5 transition-all"
               >
                 <HiPaperAirplane className="w-4 h-4" />
-                <span>Contact Owner</span>
+                <span>{t('contactOwner')}</span>
               </button>
             </div>
           </div>
@@ -190,7 +203,7 @@ export default function PGDetailsPage({ params }: { params: Promise<{ id: string
                     : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >
-                {cat.replace('_', ' ')}
+                {categoryLabels[cat] || cat.replace('_', ' ')}
               </button>
             ))}
           </div>

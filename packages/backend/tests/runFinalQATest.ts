@@ -69,7 +69,7 @@ async function runFinalQAAudit() {
   if (demoPg && owner2User && owner1User && owner2User.id !== demoPg.ownerId) {
     try {
       await owner2Caller.pgs.update({ id: demoPg.id, title: 'Hacked Title' });
-      throw new Error('SECURITY VULNERABILITY: Owner 2 edited another owner\'s PG listing!');
+      throw new Error("SECURITY VULNERABILITY: Owner 2 edited another owner's PG listing!");
     } catch (err: any) {
       if (err.message.includes('SECURITY VULNERABILITY:')) throw err;
       console.log('✅ Passed Ownership Protection Guard: Cross-owner mutation blocked.');
@@ -92,7 +92,9 @@ async function runFinalQAAudit() {
   });
 
   if (samplePg.trueMonthlyCost !== manualCost.totalMonthlyCost) {
-    throw new Error(`Cost calculation mismatch: PG trueMonthlyCost ${samplePg.trueMonthlyCost} != formula ${manualCost.totalMonthlyCost}`);
+    throw new Error(
+      `Cost calculation mismatch: PG trueMonthlyCost ${samplePg.trueMonthlyCost} != formula ${manualCost.totalMonthlyCost}`
+    );
   }
   console.log(`✅ True Monthly Cost Formula Audited & Consistent: ₹${samplePg.trueMonthlyCost}/mo`);
 
@@ -100,22 +102,28 @@ async function runFinalQAAudit() {
   console.log('\n4️⃣ AUDITING GOOGLE ROUTES & DISTANCE COMPUTATION...');
   const routeCalc = await GoogleRoutesService.computeDistanceAndCommute(
     { latitude: 28.6904, longitude: 77.2066 }, // DU North Campus
-    { latitude: 28.692, longitude: 77.208 }    // Nearby PG
+    { latitude: 28.692, longitude: 77.208 } // Nearby PG
   );
-  console.log(`✅ Route Computation Result: ${routeCalc.distanceKm} km, ${routeCalc.commuteTimeMins} min ${routeCalc.commuteMode.toLowerCase()} (${routeCalc.commuteFareFormula})`);
+  console.log(
+    `✅ Route Computation Result: ${routeCalc.distanceKm} km, ${routeCalc.commuteTimeMins} min ${routeCalc.commuteMode.toLowerCase()} (${routeCalc.commuteFareFormula})`
+  );
   if (routeCalc.distanceKm <= 0 || routeCalc.commuteTimeMins <= 0) {
     throw new Error('GoogleRoutesService returned invalid route metrics!');
   }
 
   // 5. DEMO SEED DATA INTEGRITY AUDIT
   console.log('\n5️⃣ AUDITING DEMO SEED DATA INTEGRITY & VERIFICATION STATE...');
-  const allDemoPgs = searchOutput.pgs.filter((p) => p.isDemoData);
-  allDemoPgs.forEach((pg) => {
+  const allDemoPgs = searchOutput.pgs.filter(p => p.isDemoData);
+  allDemoPgs.forEach(pg => {
     if (pg.isVerified !== false) {
-      throw new Error(`DEMO Listing Integrity Violation: PG #${pg.id} [${pg.title}] has isVerified=true!`);
+      throw new Error(
+        `DEMO Listing Integrity Violation: PG #${pg.id} [${pg.title}] has isVerified=true!`
+      );
     }
   });
-  console.log(`✅ Passed DEMO Data Integrity Check: All ${allDemoPgs.length} DEMO listings explicitly return isVerified=false.`);
+  console.log(
+    `✅ Passed DEMO Data Integrity Check: All ${allDemoPgs.length} DEMO listings explicitly return isVerified=false.`
+  );
 
   // 6. MULTI-AGENT AI SYSTEM & DETERMINISTIC MATCH SCORE AUDIT
   console.log('\n6️⃣ AUDITING MULTI-AGENT AI SYSTEM & DETERMINISTIC MATCH SCORES...');
@@ -132,7 +140,9 @@ async function runFinalQAAudit() {
   const topRec = aiResult.recommendations?.rankedCandidates[0];
   if (!topRec) throw new Error('AI pipeline returned zero recommendations!');
 
-  console.log(` - Top Candidate: [${topRec.title}] | Match Score: ${topRec.matchScore}% | True Cost: ₹${topRec.trueMonthlyCost}`);
+  console.log(
+    ` - Top Candidate: [${topRec.title}] | Match Score: ${topRec.matchScore}% | True Cost: ₹${topRec.trueMonthlyCost}`
+  );
 
   if (topRec.matchScore <= 0 || topRec.matchScore > 100) {
     throw new Error(`Invalid matchScore bounds: ${topRec.matchScore}`);
@@ -141,17 +151,26 @@ async function runFinalQAAudit() {
   if (topRec.isDemoData && topRec.isVerified !== false) {
     throw new Error('AI Recommendation returned isVerified=true for a DEMO seed listing!');
   }
-  console.log('✅ Passed AI Output Integrity Check: Match scores are deterministic and DEMO listings are cleanly labeled.');
+  console.log(
+    '✅ Passed AI Output Integrity Check: Match scores are deterministic and DEMO listings are cleanly labeled.'
+  );
 
   // 7. SUPERVISOR INTENT ROUTING AUDIT
   console.log('\n7️⃣ AUDITING SUPERVISOR INTENT ROUTING...');
-  const foodRoute = await SupervisorRouter.route({ naturalLanguageRequest: 'Which PG has the best food?' } as any);
-  const commuteRoute = await SupervisorRouter.route({ naturalLanguageRequest: 'Which PG has the shortest commute?' } as any);
+  const foodRoute = await SupervisorRouter.route({
+    naturalLanguageRequest: 'Which PG has the best food?',
+  } as any);
+  const commuteRoute = await SupervisorRouter.route({
+    naturalLanguageRequest: 'Which PG has the shortest commute?',
+  } as any);
 
   console.log(` - Food Query Routed Agents: [${foodRoute.requiredAgents.join(', ')}]`);
   console.log(` - Commute Query Routed Agents: [${commuteRoute.requiredAgents.join(', ')}]`);
 
-  if (!foodRoute.requiredAgents.includes('FOOD') || !commuteRoute.requiredAgents.includes('COMMUTE')) {
+  if (
+    !foodRoute.requiredAgents.includes('FOOD') ||
+    !commuteRoute.requiredAgents.includes('COMMUTE')
+  ) {
     throw new Error('Supervisor Router intent classification failed!');
   }
   console.log('✅ Passed Supervisor Intent Routing Audit.');
@@ -159,7 +178,9 @@ async function runFinalQAAudit() {
   // 8. FULL SYSTEM REGRESSION MATRIX
   console.log('\n8️⃣ EXECUTING FULL SYSTEM REGRESSION MATRIX...');
   const adminMetrics = await adminCaller.admin.getOverview();
-  console.log(`✅ Admin Metrics Overview Verified: Total Users: ${adminMetrics.users.total}, Total Listings: ${adminMetrics.listings.total}`);
+  console.log(
+    `✅ Admin Metrics Overview Verified: Total Users: ${adminMetrics.users.total}, Total Listings: ${adminMetrics.listings.total}`
+  );
 
   console.log('\n====================================================');
   console.log('🎉 ALL NESTORA FINAL QA AUDITS PASSED WITH ZERO ERRORS!');
@@ -167,7 +188,7 @@ async function runFinalQAAudit() {
 }
 
 runFinalQAAudit()
-  .catch((err) => {
+  .catch(err => {
     console.error('❌ Nestora Final QA Audit Failed:', err);
     process.exit(1);
   })

@@ -28,7 +28,9 @@ export class PGMatcherAgent {
 
     // 2. Fallback: If no candidate passed strict search query filters, perform broad search to identify closest candidates
     if (rawCandidates.length === 0) {
-      state.warnings.push('No PGs matched all strict hard constraints. Retrieving closest available candidates with constraint violations.');
+      state.warnings.push(
+        'No PGs matched all strict hard constraints. Retrieving closest available candidates with constraint violations.'
+      );
       const fallbackSearchResult = await PGSearchService.searchPgs({
         collegeId: prefs.targetCollegeId || 1,
         page: 1,
@@ -38,17 +40,19 @@ export class PGMatcherAgent {
     }
 
     // 3. Compute deterministic match scores for all retrieved candidates
-    const scoredCandidates: Array<{ pg: any; scoreInfo: CandidatePGScore }> = rawCandidates.map((pg) => {
-      const scoreInfo = MatchScoringEngine.scoreCandidate(pg, prefs);
-      return { pg, scoreInfo };
-    });
+    const scoredCandidates: Array<{ pg: any; scoreInfo: CandidatePGScore }> = rawCandidates.map(
+      pg => {
+        const scoreInfo = MatchScoringEngine.scoreCandidate(pg, prefs);
+        return { pg, scoreInfo };
+      }
+    );
 
     // 4. Filter or sort candidates by total score descending
     scoredCandidates.sort((a, b) => b.scoreInfo.totalScore - a.scoreInfo.totalScore);
 
     // Attach candidates and scores to state
-    state.candidatePGs = scoredCandidates.map((c) => c.pg);
-    state.deterministicScores = scoredCandidates.map((c) => c.scoreInfo);
+    state.candidatePGs = scoredCandidates.map(c => c.pg);
+    state.deterministicScores = scoredCandidates.map(c => c.scoreInfo);
 
     state.executionMetadata.agentTimings['PGMatcherAgent'] = Date.now() - startTime;
     return state;
