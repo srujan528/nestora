@@ -48,7 +48,9 @@ async function verifyMigration() {
     console.log(`\n✅ Verified sample PG query: "${samplePg.title}" at ${samplePg.locality}`);
     console.log(`  Owner: ${samplePg.owner.name} (${samplePg.owner.email})`);
     console.log(`  College Proximity: ${samplePg.college.name}`);
-    console.log(`  Rooms: ${samplePg.rooms.length}, Photos: ${samplePg.photos.length}, Amenities: ${samplePg.amenities.length}`);
+    console.log(
+      `  Rooms: ${samplePg.rooms.length}, Photos: ${samplePg.photos.length}, Amenities: ${samplePg.amenities.length}`
+    );
     console.log(`  Reviews: ${samplePg.reviews.length}`);
   } else {
     throw new Error('❌ Sample PG listing not found in PostgreSQL!');
@@ -58,7 +60,7 @@ async function verifyMigration() {
   await prisma.$disconnect();
 }
 
-verifyMigration().catch((err) => {
+verifyMigration().catch(err => {
   console.error('❌ Verification failed:', err);
   process.exit(1);
 });

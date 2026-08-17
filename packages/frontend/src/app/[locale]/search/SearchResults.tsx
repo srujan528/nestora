@@ -71,42 +71,28 @@ export default function SearchResults({ searchParams }: { searchParams: SearchPa
   const trpc = useTRPCClient()
 
   const { data, isPending, error } = useQuery({
-    queryKey: ['properties.search', searchFilters, user?.id],
-    queryFn: () => trpc.properties.search.query(searchFilters),
+    queryKey: ['pgs.list', searchFilters, user?.id],
+    queryFn: () => trpc.pgs.list.query(searchFilters as any),
     enabled: !isLoading, // 只在认证状态确定后才启用查询
-   
   })
 
   // 当用户登录状态变化时，重新获取房产数据
   useEffect(() => {
     if (!isLoading) {
-      queryClient.invalidateQueries({ queryKey: ['properties.search', searchFilters] });
+      queryClient.invalidateQueries({ queryKey: ['pgs.list', searchFilters] });
     }
   }, [user?.id, searchFilters, queryClient, isLoading]);
 
-  // Deprecated: use subscriptions field from PropertyCard directly
-  // // 获取用户收藏列表
-  // const { data: subscriptions, isLoading: subscriptionsLoading } = useQuery({
-  //   queryKey: ['properties.getSubscriptions'],
-  //   queryFn: () => trpc.properties.getSubscriptions.query(),
-  //   enabled: typeof window !== 'undefined' && !!localStorage.getItem('auth-token'),
-  // })
-
-  // // 创建收藏 ID 的 Set 用于快速查找
-  // const subscribedPropertyIds = new Set(
-  //   subscriptions?.map((sub: { id: number }) => sub.id) || []
-  // )
-
-  const properties = data?.properties || []
+  const properties: any[] = data?.pgs || []
   const searchSummary = {
-    totalCount: data?.totalCount || 0,
-    filteredCount: data?.filteredCount || 0,
-    averagePrice: data?.averagePrice || 0,
-    averageCommuteTime: data?.averageCommuteTime || 0,
-    topRegions: data?.topRegions || []
+    totalCount: data?.total || 0,
+    filteredCount: data?.total || 0,
+    averagePrice: 0,
+    averageCommuteTime: 0,
+    topRegions: []
   }
 
-  const totalPages = Math.max(1, Math.ceil(searchSummary.filteredCount / 12))
+  const totalPages = data?.totalPages || 1
 
   return (
     <section className="pb-12 md:pb-16">
@@ -137,25 +123,24 @@ export default function SearchResults({ searchParams }: { searchParams: SearchPa
               <EmptyState query={searchParams.q || ''} />
             ) : (
               <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {properties.map(property => (
+                {properties.map((property: any) => (
                   <PropertyCard
                     key={property.id}
                     id={property.id}
+                    propertyId={property.id}
                     address={property.address}
-                    region={property.region || ''}
-                    price={property.price}
-                    bedroomCount={property.bedroomCount}
-                    bathroomCount={property.bathroomCount}
-                    propertyType={property.propertyType}
-                    commuteTime={property.commuteTime ?? undefined}
-                    url={property.url}
-                    thumbnailUrl={property.thumbnailUrl}
-                    subscribed={property.subscribed}
-                    averageScore={property.averageScore}
-                    keywords={property.keywords}
-                    availableDate={property.availableDate}
-                    publishedAt={property.publishedAt}
-                    propertyId={property.id as number}
+                    region={property.locality || property.city || property.college?.name || ''}
+                    price={property.minRent}
+                    bedroomCount={property.rooms?.length || 1}
+                    bathroomCount={1}
+                    propertyType={1}
+                    commuteTime={property.commuteTimeMins || undefined}
+                    url={`/pg/${property.id}`}
+                    thumbnailUrl={property.photos?.[0]?.url || '/placeholder.png'}
+                    subscribed={false}
+                    averageScore={property.averageRating || 4.5}
+                    keywords={`${property.genderRestriction} • ${property.foodType}`}
+                    publishedAt={new Date(property.createdAt).toISOString()}
                   />
                 ))}
               </div>

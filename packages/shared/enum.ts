@@ -3,6 +3,7 @@ export enum LOCALE {
   HI = 'hi',
   TE = 'te',
   KN = 'kn',
+  ZH = 'zh',
 }
 
 export enum ROLE {

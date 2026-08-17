@@ -9,8 +9,8 @@ import {
   MealOption,
   calculateTrueMonthlyCost,
 } from '@qrent/shared';
-import { GoogleRoutesService } from '@/services/GoogleRoutesService';
-import { PGSearchService } from '@/services/PGSearchService';
+import { GoogleRoutesService } from '../../services/GoogleRoutesService';
+import { PGSearchService } from '../../services/PGSearchService';
 
 const pgFilterSchema = z.object({
   collegeId: z.number().optional(),

@@ -1,6 +1,6 @@
 import { prisma, calculateTrueMonthlyCost } from '@qrent/shared';
-import { PGSearchService, PGSearchInput } from '@/services/PGSearchService';
-import { GoogleRoutesService, LocationCoord } from '@/services/GoogleRoutesService';
+import { PGSearchService, PGSearchInput } from '../../services/PGSearchService';
+import { GoogleRoutesService, LocationCoord } from '../../services/GoogleRoutesService';
 
 export class AITools {
   /**

@@ -1,4 +1,4 @@
-import HttpError from '@/error/HttpError';
+import HttpError from '../error/HttpError';
 import { initTRPC, TRPCError } from '@trpc/server';
 import { ZodError } from 'zod';
 import { User } from '@qrent/shared';

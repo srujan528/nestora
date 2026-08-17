@@ -7,6 +7,10 @@
     "./trpc": {
       "types": "./src/trpc-types.ts",
       "default": "./src/trpc-types.ts"
+    },
+    "./trpc/context": {
+      "types": "./src/trpc/context.ts",
+      "default": "./src/trpc/context.ts"
     }
   },
   "scripts": {

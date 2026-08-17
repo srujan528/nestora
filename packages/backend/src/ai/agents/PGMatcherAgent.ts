@@ -1,5 +1,5 @@
 import { AgentState, CandidatePGScore } from '../AgentState';
-import { PGSearchService } from '@/services/PGSearchService';
+import { PGSearchService } from '../../services/PGSearchService';
 import { MatchScoringEngine } from '../MatchScoringEngine';
 
 export class PGMatcherAgent {

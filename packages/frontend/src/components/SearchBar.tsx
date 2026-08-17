@@ -1,6 +1,5 @@
 'use client';
 
-import { SCHOOL } from '@qrent/shared/enum';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';

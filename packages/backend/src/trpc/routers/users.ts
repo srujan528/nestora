@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { protectedProcedure } from '../trpc';
-import { userService } from '@/services/UserService';
+import { userService } from '../../services/UserService';
 
 export const usersRouter = {
   getProfile: protectedProcedure.query(async ({ ctx }) => {

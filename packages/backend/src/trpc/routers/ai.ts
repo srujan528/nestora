@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { publicProcedure } from '../trpc';
-import { LangGraphRunner } from '@/ai/LangGraphRunner';
+import { LangGraphRunner } from '../../ai/LangGraphRunner';
 
 const recommendationInputSchema = z.object({
   prompt: z.string().min(2, 'Prompt must be at least 2 characters'),

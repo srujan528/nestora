@@ -15,10 +15,19 @@ export async function createTRPCContext({
   let userId: number | undefined;
   let user: User | null = null;
 
+  const getHeader = (name: string): string | undefined => {
+    if (!req || !req.headers) return undefined;
+    if (typeof (req.headers as any).get === 'function') {
+      return (req.headers as any).get(name) || undefined;
+    }
+    const val = (req.headers as any)[name.toLowerCase()];
+    return Array.isArray(val) ? val[0] : val;
+  };
+
   // Extract authentication info
-  const authHeader = req.headers.authorization;
+  const authHeader = getHeader('authorization');
   const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : undefined;
-  const secret = process.env.BACKEND_JWT_SECRET_KEY;
+  const secret = process.env.BACKEND_JWT_SECRET_KEY || process.env.JWT_SECRET;
 
   if (token && secret) {
     try {
@@ -37,9 +46,9 @@ export async function createTRPCContext({
   // Extract locale from headers
   let locale: LOCALE = LOCALE.EN;
 
-  const acceptLanguage = req.headers['accept-language'] as string;
+  const acceptLanguage = getHeader('accept-language');
   const acceptLanguagePrefix = acceptLanguage?.split(',')[0]?.split('-')[0]; // e.g., "en-US" -> "en"
-  const localeHeader = req.headers['x-locale'] as string;
+  const localeHeader = getHeader('x-locale');
 
   if (localeHeader && isLocale(localeHeader)) {
     locale = localeHeader;

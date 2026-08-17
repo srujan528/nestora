@@ -21,15 +21,15 @@ export default function FavoritePage() {
   
   // 获取用户收藏的房产列表
   const { data, isPending, error } = useQuery({
-    queryKey: ['properties.subscriptions', user?.id],
-    queryFn: () => trpc.properties.getSubscriptions.query(),
+    queryKey: ['savedPgs.list', user?.id],
+    queryFn: () => trpc.savedPgs.list.query(),
     enabled: !isLoading,
   });
 
   // 监听用户认证状态变化，重新获取收藏数据
   useEffect(() => {
     if (!isLoading && user?.id) {
-      queryClient.invalidateQueries({ queryKey: ['properties.subscriptions', user.id] });
+      queryClient.invalidateQueries({ queryKey: ['savedPgs.list', user.id] });
     }
   }, [user?.id, isLoading, queryClient]);
   
@@ -163,23 +163,22 @@ export default function FavoritePage() {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {properties.map(property => (
               <PropertyCard
-                key={property.id as string | number}
+                key={property.id}
+                id={property.id}
+                propertyId={property.id}
                 address={property.address}
-                region={property.region || ''}
-                price={property.price}
-                bedroomCount={property.bedroomCount}
-                bathroomCount={property.bathroomCount}
-                propertyType={property.propertyType}
-                commuteTime={property.commuteTime ?? undefined}
-                url={property.url}
-                thumbnailUrl={property.thumbnailUrl}
-                averageScore={property.averageScore}
-                keywords={property.keywords}
-                availableDate={property.availableDate}
-                publishedAt={property.publishedAt}
-                subscribed={property.subscribed}
-                propertyId={property.id as number}
-                id={property.id as number}
+                region={property.locality || property.city || property.college?.name || ''}
+                price={property.minRent}
+                bedroomCount={property.rooms?.length || 1}
+                bathroomCount={1}
+                propertyType={1}
+                commuteTime={property.commuteTimeMins || undefined}
+                url={`/pg/${property.id}`}
+                thumbnailUrl={property.photos?.[0]?.url || '/placeholder.png'}
+                averageScore={property.averageRating || 4.5}
+                keywords={`${property.genderRestriction} • ${property.foodType}`}
+                publishedAt={new Date(property.createdAt).toISOString()}
+                subscribed={true}
               />
             ))}
           </div>

@@ -105,10 +105,10 @@ export default function PGDetailsPage({ params }: { params: Promise<{ id: string
     });
   };
 
-  const filteredPhotos =
+  const filteredPhotos: any[] =
     activePhotoCategory === 'ALL'
       ? pg.photos
-      : pg.photos.filter((p) => p.category === activePhotoCategory);
+      : pg.photos.filter((p: any) => p.category === activePhotoCategory);
 
   const activePhoto = filteredPhotos[selectedPhotoIndex] || pg.photos[0];
 
@@ -259,7 +259,7 @@ export default function PGDetailsPage({ params }: { params: Promise<{ id: string
               </h2>
 
               <div className="space-y-3">
-                {pg.rooms.map((room) => (
+                {pg.rooms.map((room: any) => (
                   <div key={room.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2">
@@ -297,7 +297,7 @@ export default function PGDetailsPage({ params }: { params: Promise<{ id: string
 
                 {/* Day selector tabs */}
                 <div className="flex items-center gap-1 overflow-x-auto pb-1 text-xs font-semibold border-b border-slate-100">
-                  {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => (
+                  {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day: any) => (
                     <button
                       key={day}
                       onClick={() => setActiveMenuDay(day)}
@@ -421,7 +421,7 @@ export default function PGDetailsPage({ params }: { params: Promise<{ id: string
                 {pg.reviews.length === 0 ? (
                   <p className="text-xs text-slate-500 py-2">No student reviews posted yet.</p>
                 ) : (
-                  pg.reviews.map((r) => (
+                  pg.reviews.map((r: any) => (
                     <div key={r.id} className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-1 text-xs">
                       <div className="flex items-center justify-between font-bold text-slate-900">
                         <span>{r.user.name}</span>
@@ -503,7 +503,7 @@ export default function PGDetailsPage({ params }: { params: Promise<{ id: string
             <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
               <h2 className="text-base font-bold text-slate-900">Included Amenities</h2>
               <div className="flex flex-wrap gap-2">
-                {pg.amenities.map((a) => (
+                {pg.amenities.map((a: any) => (
                   <span key={a.id} className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-800 text-xs font-semibold border border-blue-100">
                     {a.name}
                   </span>

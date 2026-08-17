@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { publicProcedure, protectedProcedure } from '../trpc';
-import { authService } from '@/services/AuthService';
+import { authService } from '../../services/AuthService';
 import { prisma } from '@qrent/shared';
 
 export const authRouter = {

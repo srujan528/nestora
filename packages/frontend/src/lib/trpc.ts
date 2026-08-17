@@ -42,14 +42,23 @@ export function getQueryClient() {
   }
 }
 
+function getTrpcUrl() {
+  const customBackend = process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (customBackend) {
+    return customBackend.endsWith('/trpc') ? customBackend : `${customBackend}/trpc`;
+  }
+  if (typeof window !== 'undefined') {
+    return '/api/trpc';
+  }
+  return 'http://localhost:3001/trpc';
+}
+
 // Factory function to create tRPC client
 export function createTRPCClientInstance() {
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
-
   return createTRPCClient<AppRouter>({
     links: [
       httpBatchLink({
-        url: `${backendUrl}/trpc`,
+        url: getTrpcUrl(),
         headers() {
           const headers: Record<string, string> = {};
 

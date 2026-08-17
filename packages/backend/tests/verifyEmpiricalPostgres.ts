@@ -56,7 +56,7 @@ async function runEmpiricalPostgresAudit() {
   const totalRowCount = modelCounts.reduce((sum, item) => sum + item.count, 0);
 
   console.log('📊 Exact PostgreSQL Row Counts Per Model (13 Models Total):');
-  modelCounts.forEach((item) => {
+  modelCounts.forEach(item => {
     console.log(`  - ${item.model}: ${item.count} rows`);
   });
   console.log(`\n🧮 EXACT TOTAL ROW COUNT ACROSS ALL 13 MODELS: ${totalRowCount} rows`);
@@ -64,13 +64,17 @@ async function runEmpiricalPostgresAudit() {
   // Reconcile 44 vs 48 figure:
   // Previous report stated 44 total demo records: (6 Users + 4 Colleges + 5 PGs + 5 Rooms + 6 Photos + 14 Amenities + 5 Menus + 3 Reviews = 48 rows total).
   console.log(`\n🔍 ROW COUNT RECONCILIATION:`);
-  console.log(`   Detailed breakdown: 6 Users + 0 StudentProfiles + 0 UserSessions + 4 Colleges + 0 Hostels + 5 PGListings + 5 Rooms + 6 PGPhotos + 14 PGAmenities + 5 WeeklyMenus + 3 Reviews + 0 SavedPGs + 0 Inquiries = ${totalRowCount} total database rows.`);
+  console.log(
+    `   Detailed breakdown: 6 Users + 0 StudentProfiles + 0 UserSessions + 4 Colleges + 0 Hostels + 5 PGListings + 5 Rooms + 6 PGPhotos + 14 PGAmenities + 5 WeeklyMenus + 3 Reviews + 0 SavedPGs + 0 Inquiries = ${totalRowCount} total database rows.`
+  );
 
   // 3. VERIFY EXPECTED DEMO LISTINGS EXIST
   console.log('\n3️⃣ VERIFYING NESTORA DEMO PG LISTINGS...');
-  const pgs = await prisma.pGListing.findMany({ select: { id: true, title: true, isDemoData: true } });
+  const pgs = await prisma.pGListing.findMany({
+    select: { id: true, title: true, isDemoData: true },
+  });
   console.log(`✅ Loaded ${pgs.length} PG Listings from Aiven PostgreSQL:`);
-  pgs.forEach((p) => console.log(`  - ID #${p.id}: "${p.title}" (isDemoData: ${p.isDemoData})`));
+  pgs.forEach(p => console.log(`  - ID #${p.id}: "${p.title}" (isDemoData: ${p.isDemoData})`));
 
   const expectedTitles = [
     'Newport House (Stanza Living)',
@@ -79,7 +83,7 @@ async function runEmpiricalPostgresAudit() {
     'Incheon House (Stanza Living)',
     'Salisbury House (Stanza Living)',
   ];
-  const missingTitles = expectedTitles.filter((title) => !pgs.some((p) => p.title === title));
+  const missingTitles = expectedTitles.filter(title => !pgs.some(p => p.title === title));
   if (missingTitles.length > 0) {
     throw new Error(`Missing expected demo PG listings: ${missingTitles.join(', ')}`);
   }
@@ -87,13 +91,18 @@ async function runEmpiricalPostgresAudit() {
 
   // 4. FOREIGN-KEY INTEGRITY & ORPHAN CHECK
   console.log('\n4️⃣ CHECKING FOREIGN KEY INTEGRITY & ORPHANED RECORDS...');
-  
+
   // Orphan Rooms
-  const orphanRoomsRes: any = await prisma.$queryRaw`SELECT count(*)::int FROM rooms WHERE pg_id NOT IN (SELECT id FROM pg_listings);`;
-  const orphanPhotosRes: any = await prisma.$queryRaw`SELECT count(*)::int FROM pg_photos WHERE pg_id NOT IN (SELECT id FROM pg_listings);`;
-  const orphanAmenitiesRes: any = await prisma.$queryRaw`SELECT count(*)::int FROM pg_amenities WHERE pg_id NOT IN (SELECT id FROM pg_listings);`;
-  const orphanMenusRes: any = await prisma.$queryRaw`SELECT count(*)::int FROM weekly_menus WHERE pg_id NOT IN (SELECT id FROM pg_listings);`;
-  const orphanReviewsRes: any = await prisma.$queryRaw`SELECT count(*)::int FROM reviews WHERE pg_id NOT IN (SELECT id FROM pg_listings) OR user_id NOT IN (SELECT id FROM users);`;
+  const orphanRoomsRes: any =
+    await prisma.$queryRaw`SELECT count(*)::int FROM rooms WHERE pg_id NOT IN (SELECT id FROM pg_listings);`;
+  const orphanPhotosRes: any =
+    await prisma.$queryRaw`SELECT count(*)::int FROM pg_photos WHERE pg_id NOT IN (SELECT id FROM pg_listings);`;
+  const orphanAmenitiesRes: any =
+    await prisma.$queryRaw`SELECT count(*)::int FROM pg_amenities WHERE pg_id NOT IN (SELECT id FROM pg_listings);`;
+  const orphanMenusRes: any =
+    await prisma.$queryRaw`SELECT count(*)::int FROM weekly_menus WHERE pg_id NOT IN (SELECT id FROM pg_listings);`;
+  const orphanReviewsRes: any =
+    await prisma.$queryRaw`SELECT count(*)::int FROM reviews WHERE pg_id NOT IN (SELECT id FROM pg_listings) OR user_id NOT IN (SELECT id FROM users);`;
 
   const orphanRooms = orphanRoomsRes[0].count;
   const orphanPhotos = orphanPhotosRes[0].count;
@@ -149,18 +158,22 @@ async function runEmpiricalPostgresAudit() {
 
   // B. Fetch PGs
   const pgSearch = await studentCaller.pgs.list({ collegeId: targetCollegeId });
-  console.log(`  - Fetch PG Listings: ${pgSearch.pgs.length} PGs retrieved for college #${targetCollegeId}`);
+  console.log(
+    `  - Fetch PG Listings: ${pgSearch.pgs.length} PGs retrieved for college #${targetCollegeId}`
+  );
 
   // C. Open Details
   const samplePgId = pgSearch.pgs[0].id;
   const pgDetails = await studentCaller.pgs.getById({ id: samplePgId });
   console.log(`  - PG Details fetched: "${pgDetails.title}"`);
-  console.log(`    Rooms: ${pgDetails.rooms.length}, Photos: ${pgDetails.photos.length}, Amenities: ${pgDetails.amenities.length}, WeeklyMenu: ${pgDetails.weeklyMenu ? 'Yes' : 'No'}`);
+  console.log(
+    `    Rooms: ${pgDetails.rooms.length}, Photos: ${pgDetails.photos.length}, Amenities: ${pgDetails.amenities.length}, WeeklyMenu: ${pgDetails.weeklyMenu ? 'Yes' : 'No'}`
+  );
 
   // D. Save PG Toggle
   const saveToggle = await studentCaller.savedPgs.toggle({ pgId: samplePgId });
   console.log(`  - Saved PG Toggle: isSaved = ${saveToggle.isSaved}`);
-  
+
   // Revert toggle
   await studentCaller.savedPgs.toggle({ pgId: samplePgId });
   console.log(`  - Reverted Saved PG Toggle.`);
@@ -186,15 +199,21 @@ async function runEmpiricalPostgresAudit() {
   }
 
   const adminOverview = await adminCaller.admin.getOverview();
-  console.log(`  - Admin Overview: Total Users = ${adminOverview.users.total}, Total Listings = ${adminOverview.listings.total}`);
+  console.log(
+    `  - Admin Overview: Total Users = ${adminOverview.users.total}, Total Listings = ${adminOverview.listings.total}`
+  );
 
   // G. Multi-Agent AI Recommendation
   const aiRecommendation = await studentCaller.ai.getRecommendation({
     prompt: 'Find me a PG near NMIT under ₹15,000 with AC and veg food',
     collegeId: collegesList[0].id,
   });
-  console.log(`  - AI Recommendation Engine: Executed agents [${aiRecommendation.requiredAgentsToRun.join(', ')}]`);
-  console.log(`  - AI Candidate Matches: ${aiRecommendation.recommendations?.rankedCandidates.length} matches generated from PostgreSQL data`);
+  console.log(
+    `  - AI Recommendation Engine: Executed agents [${aiRecommendation.requiredAgentsToRun.join(', ')}]`
+  );
+  console.log(
+    `  - AI Candidate Matches: ${aiRecommendation.recommendations?.rankedCandidates.length} matches generated from PostgreSQL data`
+  );
 
   console.log('\n====================================================');
   console.log('🎉 EMPIRICAL AIVEN POSTGRESQL AUDIT PASSED 100% WITH ZERO ERRORS!');
@@ -202,7 +221,7 @@ async function runEmpiricalPostgresAudit() {
 }
 
 runEmpiricalPostgresAudit()
-  .catch((err) => {
+  .catch(err => {
     console.error('❌ Empirical PostgreSQL Audit Failed:', err);
     process.exit(1);
   })

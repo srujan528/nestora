@@ -1,6 +1,5 @@
 'use client'
 
-import { PROPERTY_TYPE } from '@qrent/shared/enum'
 import { useLocale, useTranslations } from 'next-intl'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -38,8 +37,8 @@ export default function FilterModal() {
 
   // Create property types with translations
   const PROPERTY_TYPES = [
-    { key: PROPERTY_TYPE.House, label: t('house') },
-    { key: PROPERTY_TYPE.Apartment, label: t('apartment') },
+    { key: 1, label: t('house') },
+    { key: 2, label: t('apartment') },
   ] as const
 
   // Local state initialized from URL - aligned with backend preferenceSchema

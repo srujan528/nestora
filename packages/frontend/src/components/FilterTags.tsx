@@ -4,7 +4,6 @@ import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { MdClose } from 'react-icons/md';
-import { PROPERTY_TYPE } from '@qrent/shared/enum';
 
 type Tag = { key: string; label: string; value: string };
 

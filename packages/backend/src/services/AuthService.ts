@@ -1,9 +1,9 @@
 import { Prisma, prisma, User } from '@qrent/shared';
-import HttpError from '@/error/HttpError';
-import { generateToken } from '@/utils/helper';
-import redis from '@/utils/redisClient';
-import { emailService } from '@/services/EmailService';
-import { hashPassword, comparePassword } from '@/utils/bcrypt';
+import HttpError from '../error/HttpError';
+import { generateToken } from '../utils/helper';
+import redis from '../utils/redisClient';
+import { emailService } from './EmailService';
+import { hashPassword, comparePassword } from '../utils/bcrypt';
 import { userService } from './UserService';
 
 class AuthService {
