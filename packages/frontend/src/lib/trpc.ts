@@ -44,7 +44,7 @@ export function getQueryClient() {
 
 // Factory function to create tRPC client
 export function createTRPCClientInstance() {
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3201';
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
 
   return createTRPCClient<AppRouter>({
     links: [
