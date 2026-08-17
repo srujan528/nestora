@@ -6,44 +6,49 @@ import { HiInformationCircle } from 'react-icons/hi';
 
 export default function NotificationBar() {
   const t = useTranslations('NotificationBar');
+  const [mounted, setMounted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // 获取所有通知消息
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Get notification messages
   const notifications = [
     t('message1'),
     t('message2'),
     t('message3'),
-  ].filter(msg => msg && msg.trim() !== ''); // 过滤掉空消息
+  ].filter(msg => msg && msg.trim() !== '');
 
   useEffect(() => {
-    if (notifications.length <= 1 || isExpanded) return;
+    if (!mounted || notifications.length <= 1 || isExpanded) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % notifications.length);
-    }, 5000); // 每5秒切换一次
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, [notifications.length, isExpanded]);
+  }, [mounted, notifications.length, isExpanded]);
 
-  if (notifications.length === 0) {
-    return null; // 如果没有消息，不显示通知栏
+  if (!mounted || notifications.length === 0) {
+    return null;
   }
 
   return (
-    <div className="mb-2 sm:mb-3">
+    <div className="mb-2 sm:mb-3" suppressHydrationWarning>
       <div className="max-w-7xl mx-auto px-5">
         <div
-          className="relative flex items-center justify-center py-3 px-4 sm:px-6 gap-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl cursor-pointer"
+          className="relative flex items-center justify-center py-3 px-4 sm:px-6 gap-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl cursor-pointer shadow-sm"
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          {/* 图标 */}
+          {/* Icon */}
           <HiInformationCircle className="flex-shrink-0 w-5 h-5" />
 
-          {/* 消息内容 */}
+          {/* Message Content */}
           <div className="flex-1 text-center overflow-hidden">
             <p
-              className={`text-sm transition-all duration-300 ${
+              className={`text-sm font-medium transition-all duration-300 ${
                 isExpanded
                   ? 'whitespace-normal'
                   : 'truncate whitespace-nowrap'
@@ -53,7 +58,7 @@ export default function NotificationBar() {
             </p>
           </div>
 
-          {/* 指示器 (只在有多条消息时显示) */}
+          {/* Indicators */}
           {notifications.length > 1 && (
             <div className="flex-shrink-0 flex gap-1.5">
               {notifications.map((_, index) => (
@@ -68,7 +73,7 @@ export default function NotificationBar() {
                       ? 'bg-white w-4'
                       : 'bg-white/50 hover:bg-white/70'
                   }`}
-                  aria-label={`查看通知 ${index + 1}`}
+                  aria-label={`Notification ${index + 1}`}
                 />
               ))}
             </div>
