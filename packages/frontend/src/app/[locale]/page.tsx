@@ -106,10 +106,12 @@ export default function StudentMarketplaceHome() {
             <div>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold border border-blue-400/30 backdrop-blur-sm">
                 <HiAcademicCap className="w-4 h-4 text-blue-400" />
-                Phase 4 — AI-Powered Multi-Agent Accommodation Engine
+                AI-Powered Multi-Agent Accommodation Engine
               </span>
-              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white mt-2 leading-tight flex flex-wrap items-center gap-3">
-                <span>Find & Compare Perfect PGs Near Your College</span>
+              <div className="mt-2 flex flex-wrap items-center gap-3">
+                <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+                  Find & Compare Perfect PGs Near Your College
+                </h1>
                 <button
                   onClick={() => setIsAiDrawerOpen(true)}
                   className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 via-indigo-600 to-blue-600 text-white font-extrabold text-xs shadow-lg hover:brightness-110 transition-all flex items-center gap-1.5 border border-amber-300/40"
@@ -117,7 +119,7 @@ export default function StudentMarketplaceHome() {
                   <HiSparkles className="w-4 h-4 text-amber-200 animate-pulse" />
                   <span>Nestora AI Assistant</span>
                 </button>
-              </h1>
+              </div>
               <p className="text-slate-300 text-xs sm:text-sm mt-1 max-w-xl">
                 Compare verified base rent, electricity, food, commute costs, sharing options, and total true monthly expenses.
               </p>

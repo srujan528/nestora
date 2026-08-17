@@ -71,7 +71,7 @@ export default function AdminFoundationPage() {
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
               <span className="text-xs font-semibold text-slate-500">Pending Verification</span>
               <p className="text-2xl font-extrabold text-amber-600">{stats?.listings.pendingVerification}</p>
-              <p className="text-[11px] text-slate-500 font-medium">For Phase 6 Workflow</p>
+              <p className="text-[11px] text-slate-500 font-medium">Awaiting Verification Audit</p>
             </div>
           </div>
         )}
