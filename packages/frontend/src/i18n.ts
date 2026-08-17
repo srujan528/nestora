@@ -8,12 +8,18 @@ export type Locale = LOCALE;
 export const fallbackLocale = DEFAULT_LOCALE;
 
 export default getRequestConfig(async ({ requestLocale }) => {
-  // This typically corresponds to the `[locale]` segment
   const resolvedLocale = await requestLocale;
   const locale = isLocale(resolvedLocale) ? resolvedLocale : fallbackLocale;
 
-  return {
-    locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
-  };
+  try {
+    return {
+      locale,
+      messages: (await import(`../messages/${locale}.json`)).default,
+    };
+  } catch (error) {
+    return {
+      locale: fallbackLocale,
+      messages: (await import(`../messages/${fallbackLocale}.json`)).default,
+    };
+  }
 });
