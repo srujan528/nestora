@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { HiAdjustments, HiSearch } from 'react-icons/hi';
 
-// BEDROOM_OPTIONS will be created inside the component to use translations
+const UNIVERSITIES = ['UNSW', 'USYD', 'UTS'] as const;
 
 export default function SearchBar() {
   const router = useRouter();
@@ -83,7 +83,7 @@ export default function SearchBar() {
               onChange={e => setTargetSchool(e.target.value)}
               className="rounded-lg border border-slate-200 px-2.5 py-2 text-sm text-slate-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none h-9"
             >
-              {Object.values(SCHOOL).map(school => (
+              {UNIVERSITIES.map(school => (
                 <option key={school} value={school}>
                   {school}
                 </option>

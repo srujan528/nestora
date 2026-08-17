@@ -1,7 +1,6 @@
 'use client';
 
 import { useTRPCClient } from '@/lib/trpc';
-import { SCHOOL } from '@qrent/shared/enum';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState, useEffect } from 'react';
@@ -9,32 +8,23 @@ import { useAuth } from '@/hooks/use-auth';
 import PropertyCard from './PropertyCard';
 import Section from './Section';
 
+const UNIVERSITIES = ['UNSW', 'USYD', 'UTS'] as const;
+
 export default function PropertyGrid() {
   const t = useTranslations('PropertyGrid');
-  const [selectedUniversity, setSelectedUniversity] = useState(SCHOOL.UNSW);
+  const [selectedUniversity, setSelectedUniversity] = useState<string>('UNSW');
   const trpc = useTRPCClient();
   const queryClient = useQueryClient();
   const { user, isLoading } = useAuth();
 
-  // 获取房产列表
   const { data, isPending, error } = useQuery({
-    queryKey: ['properties.search', selectedUniversity, user?.id],
+    queryKey: ['pgs.list', selectedUniversity, user?.id],
     queryFn: () =>
-      trpc.properties.search.query({
-        targetSchool: selectedUniversity,
+      trpc.pgs.list.query({
         pageSize: 8,
         page: 1,
-        orderBy: [
-          {
-            publishedAt: 'desc' as const,
-          },
-          {
-            averageScore: 'desc' as const,
-          },
-        ],
-      }),
-    enabled: !isLoading, // 只在认证状态确定后才启用查询
-    
+      } as any),
+    enabled: !isLoading,
   });
 
   // @Deprecated: 后端应该直接返回房源状态
@@ -58,31 +48,31 @@ export default function PropertyGrid() {
   // }, [subscriptions]);
 
   const getUniversityColors = (school: string, isSelected: boolean) => {
-    const colors = {
-      [SCHOOL.UNSW]: {
+    const colors: Record<string, { selected: string; hover: string }> = {
+      UNSW: {
         selected: 'bg-yellow-400 text-black',
         hover: 'hover:bg-yellow-100 hover:text-yellow-800',
       },
-      [SCHOOL.USYD]: {
+      USYD: {
         selected: 'bg-blue-800 text-yellow-400',
         hover: 'hover:bg-blue-100 hover:text-blue-800',
       },
-      [SCHOOL.UTS]: {
+      UTS: {
         selected: 'bg-blue-500 text-orange-400',
         hover: 'hover:bg-blue-100 hover:text-blue-600',
       },
     };
 
     return isSelected
-      ? colors[school as keyof typeof colors]?.selected || 'bg-blue-600 text-white'
-      : colors[school as keyof typeof colors]?.hover || 'hover:text-blue-600';
+      ? colors[school]?.selected || 'bg-blue-600 text-white'
+      : colors[school]?.hover || 'hover:text-blue-600';
   };
 
   const sectionTitle = (
     <div className="flex flex-wrap justify-center items-center gap-3">
       <span>{t('dailyNewHouses')}</span>
       <div className="flex flex-wrap rounded-lg border border-slate-200 bg-slate-50">
-        {Object.values(SCHOOL).map(school => (
+        {UNIVERSITIES.map(school => (
           <button
             key={school}
             onClick={() => setSelectedUniversity(school)}
@@ -132,7 +122,7 @@ export default function PropertyGrid() {
     );
   }
 
-  const properties = data?.properties || [];
+  const properties: any[] = data?.pgs || [];
 
   // 🔥 在前端按评分降序排序(从高到低)
   const sortedProperties = [...properties].sort((a, b) => {
@@ -142,25 +132,24 @@ export default function PropertyGrid() {
   return (
     <Section title={sectionTitle}>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {sortedProperties.map(property => (
+        {sortedProperties.map((property: any) => (
           <PropertyCard
             id={property.id}
+            propertyId={property.id}
             key={property.id}
             address={property.address}
-            region={property.region || ''}
-            price={property.price}
-            bedroomCount={property.bedroomCount}
-            bathroomCount={property.bathroomCount}
-            propertyType={property.propertyType}
-            commuteTime={property.commuteTime ?? undefined}
-            url={property.url}
-            thumbnailUrl={property.thumbnailUrl}
-            subscribed={property.subscribed}
-            averageScore={property.averageScore}
-            keywords={property.keywords}
-            availableDate={property.availableDate}
-            publishedAt={property.publishedAt}
-            propertyId={property.id as number}
+            region={property.locality || property.city || property.college?.name || ''}
+            price={property.minRent}
+            bedroomCount={property.rooms?.length || 1}
+            bathroomCount={1}
+            propertyType={1}
+            commuteTime={property.commuteTimeMins || undefined}
+            url={`/pg/${property.id}`}
+            thumbnailUrl={property.photos?.[0]?.url || '/placeholder.png'}
+            subscribed={false}
+            averageScore={property.averageRating || 4.5}
+            keywords={`${property.genderRestriction} • ${property.foodType}`}
+            publishedAt={new Date(property.createdAt).toISOString()}
           />
         ))}
       </div>
