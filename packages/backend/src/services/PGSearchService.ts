@@ -98,7 +98,7 @@ export class PGSearchService {
       andConditions.push({ collegeId: input.collegeId });
     }
     if (input.city) {
-      andConditions.push({ city: { contains: input.city } });
+      andConditions.push({ city: { contains: input.city, mode: 'insensitive' } });
     }
     if (input.genderRestriction) {
       andConditions.push({ genderRestriction: input.genderRestriction });
@@ -121,10 +121,10 @@ export class PGSearchService {
     if (input.search) {
       andConditions.push({
         OR: [
-          { title: { contains: input.search } },
-          { locality: { contains: input.search } },
-          { address: { contains: input.search } },
-          { description: { contains: input.search } },
+          { title: { contains: input.search, mode: 'insensitive' } },
+          { locality: { contains: input.search, mode: 'insensitive' } },
+          { address: { contains: input.search, mode: 'insensitive' } },
+          { description: { contains: input.search, mode: 'insensitive' } },
         ],
       });
     }
