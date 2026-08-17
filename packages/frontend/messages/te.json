@@ -1,0 +1,370 @@
+{
+  "FavoritePage": {
+    "title": "నాకిష్టమైన PGలు",
+    "emptyState": "మీరు ఇంకా ఏ PGలను సేవ్ చేయలేదు. PGలను బ్రౌజ్ చేసి ఇక్కడ జోడించడానికి స్టార్ ఐకాన్ క్లిక్ చేయండి.",
+    "errorState": "ఇష్టమైనవి లోడ్ చేయడంలో విఫలమైంది. దయచేసి తర్వాత మళ్ళీ ప్రయత్నించండి.",
+    "unauthorizedError": "మీ ఇష్టమైన వాటిని చూడటానికి దయచేసి లాగిన్ అవ్వండి",
+    "loginRequired": "లాగిన్ అవసరం",
+    "forbiddenError": "మీకు ఈ పేజీని యాక్సెస్ చేయడానికి అనుమతి లేదు",
+    "notFoundError": "ఇష్టమైన జాబితా కనుగొనబడలేదు",
+    "networkError": "నెట్‌వర్క్ కనెక్షన్ విఫలమైంది. దయచేసి మీ కనెక్షన్‌ని తనిఖీ చేయండి",
+    "serverError": "సర్వర్ లోపం. దయచేసి తర్వాత మళ్ళీ ప్రయత్నించండి",
+    "goToLogin": "లాగిన్‌కి వెళ్లండి"
+  },
+  "Header": {
+    "login": "లాగిన్",
+    "signup": "సైన్ అప్",
+    "signout": "సైన్ అవుట్",
+    "userMenu": "యూజర్ మెనూ",
+    "openMenu": "మెనూ తెరవండి",
+    "closeMenu": "మెనూ మూసివేయండి",
+    "rentalGuide": "రెంటల్ గైడ్",
+    "documentPreparation": "డాక్యుమెంట్ తయారీ",
+    "favorite": "సేవ్ చేసిన PGలు",
+    "homepage": "హోమ్‌పేజీ",
+    "rentalBlog": "గైడ్"
+  },
+  "SearchBar": {
+    "placeholder": "నగరం, చిరునామా లేదా కాలేజీ ఆధారంగా శోధించండి...",
+    "searchButton": "శోధించు",
+    "filters": "ఫిల్టర్లు",
+    "targetSchool": "లక్ష్య కాలేజీ",
+    "maxPrice": "గరిష్ట అద్దె (₹/నెల)",
+    "maxCommute": "గరిష్ట ప్రయాణం (నిమిషాలు)",
+    "bedrooms": "గదులు",
+    "anyPlaceholder": "ఏదైనా",
+    "anyBedrooms": "ఏదైనా గది",
+    "oneBedroom": "1 గది",
+    "twoBedrooms": "2 గదులు",
+    "threeBedrooms": "3 గదులు",
+    "fourBedrooms": "4 గదులు",
+    "fivePlusBedrooms": "5+ గదులు"
+  },
+  "FilterModal": {
+    "title": "ఫిల్టర్లు",
+    "priceRange": "ధర పరిధి",
+    "bedrooms": "గదులు",
+    "bathrooms": "బాత్‌రూమ్‌లు",
+    "propertyType": "ప్రాపర్టీ రకం",
+    "location": "ప్రాంతం",
+    "availableDate": "లభ్యత తేదీ",
+    "clearAll": "అన్నీ క్లియర్ చేయండి",
+    "applyFilters": "ఫిల్టర్లు వర్తింపజేయి",
+    "close": "మూసివేయి",
+    "any": "ఏదైనా",
+    "house": "ఇల్లు",
+    "apartment": "ఫ్లాట్/PG",
+    "min": "కనిష్టం",
+    "max": "గరిష్టం",
+    "rating": "రేటింగ్",
+    "price": "ధర",
+    "bedroomSuffix": "గది",
+    "bathroomSuffix": "బాత్‌రూమ్",
+    "minutes": "నిమిషాలు",
+    "ratingSuffix": "",
+    "commute": "ప్రయాణం",
+    "currentFilters": "ప్రస్తుత ఫిల్టర్లు:",
+    "clearAllFilters": "అన్నీ క్లియర్ చేయండి"
+  },
+  "Auth": {
+    "loginTitle": "మళ్ళీ స్వాగతం",
+    "signupTitle": "మీ ఖాతాను సృష్టించండి",
+    "email": "ఇమెయిల్",
+    "password": "పాస్‌వర్డ్",
+    "confirmPassword": "పాస్‌వర్డ్ నిర్ధారించండి",
+    "name": "పేరు",
+    "loginButton": "లాగిన్",
+    "signupButton": "సైన్ అప్",
+    "switchToSignup": "ఖాతా లేదా?",
+    "switchToLogin": "ఇప్పటికే ఖాతా ఉందా?",
+    "showPassword": "పాస్‌వర్డ్ చూపించు",
+    "hidePassword": "పాస్‌వర్డ్ దాచు",
+    "invalidEmail": "చెల్లని ఇమెయిల్ చిరునామా",
+    "passwordMinLength": "పాస్‌వర్డ్ కనీసం 6 అక్షరాలు ఉండాలి",
+    "passwordsDontMatch": "పాస్‌వర్డ్‌లు సరిపోలలేదు"
+  },
+  "Footer": {
+    "about": "మా గురించి",
+    "meetOurTeam": "మా బృందాన్ని కలవండి",
+    "getInTouch": "సంప్రదించండి",
+    "copyEmail": "ఇమెయిల్ కాపీ చేయండి: contact@nestora.demo",
+    "emailCopied": "క్లిప్‌బోర్డ్‌కి కాపీ చేయబడింది",
+    "copyright": "కాపీరైట్ © 2026 - సర్వహక్కులు Nestora PGFinder ద్వారా రక్షించబడ్డాయి",
+    "icp": "AI-ఆధారిత వసతి మరియు PG రికమండేషన్ ఇengine"
+  },
+  "LanguageSwitcher": {
+    "english": "English",
+    "hindi": "हिन्दी",
+    "telugu": "తెలుగు",
+    "kannada": "ಕನ್ನಡ"
+  },
+  "About": {
+    "title": "About QRent",
+    "mission": {
+      "title": "Our Mission",
+      "description1": "QRent is dedicated to simplifying the rental property search experience for students and young professionals. We understand that finding the perfect place to live can be overwhelming, time-consuming, and stressful. That's why we've built a platform that aggregates rental listings, analyzes them with intelligent scoring, and helps you make informed decisions quickly.",
+      "description2": "Our smart scoring system evaluates properties based on multiple factors including location, price, amenities, and proximity to universities, giving you a comprehensive view at a glance."
+    },
+    "whatWeDo": {
+      "title": "What We Do",
+      "smartAggregation": {
+        "title": "Smart Aggregation",
+        "description": "We collect and organize rental listings from multiple sources, saving you hours of searching across different platforms."
+      },
+      "intelligentScoring": {
+        "title": "Intelligent Scoring",
+        "description": "Our proprietary algorithm scores each property based on value, location, amenities, and other key factors."
+      },
+      "realTimeUpdates": {
+        "title": "Real-Time Updates",
+        "description": "Stay informed with up-to-date listings and availability information, so you never miss out on great opportunities."
+      },
+      "personalizedExperience": {
+        "title": "Personalized Experience",
+        "description": "Save your preferences, track favorite properties, and receive notifications about new listings that match your criteria."
+      }
+    },
+    "ourStory": {
+      "title": "Our Story",
+      "description1": "QRent was born from personal experience. As students ourselves, we faced the challenges of finding quality, affordable housing while balancing studies and limited budgets. We realized that the rental market needed a better solution—one that combines technology with genuine understanding of renters' needs.",
+      "description2": "Today, we're proud to help thousands of renters find their ideal homes, making the process easier, faster, and more transparent. We're constantly evolving our platform based on user feedback and market trends to serve you better."
+    }
+  },
+  "Team": {
+    "title": "Meet Our Team",
+    "subtitle": "We're a diverse group of developers, designers, and rental market enthusiasts working together to revolutionize the way people find their homes.",
+    "joinTeam": {
+      "title": "Join Our Team",
+      "description": "We're always looking for passionate individuals who want to make a difference in the rental market. If you're interested in joining QRent, we'd love to hear from you!",
+      "getInTouch": "Get in Touch"
+    },
+    "members": {
+      "zhiyang": {
+        "bio": "Product visionary with a strong business background. Zhiyang drives QRent's strategic direction, ensuring the platform meets real market needs while building sustainable growth for the company.",
+        "expertise": "Product Strategy, Business Development"
+      },
+      "cliff": {
+        "bio": "System architect and DevOps expert who designed QRent's scalable infrastructure. Cliff ensures seamless deployment pipelines and robust full-stack solutions that power our platform.",
+        "expertise": "System Architecture, DevOps, Full Stack"
+      },
+      "zack": {
+        "bio": "Data specialist who transforms raw property information into actionable insights. Yibin builds the data pipelines and analytics that help users make informed rental decisions.",
+        "expertise": "Data Engineering, Data Analytics"
+      },
+      "yuting": {
+        "bio": "Frontend developer focused on creating intuitive and responsive user experiences. Yuting crafts the interfaces that make property searching effortless and enjoyable.",
+        "expertise": "Frontend Development, React, UI/UX"
+      },
+      "qixin": {
+        "bio": "Frontend engineer passionate about performance and accessibility. Qixin ensures QRent delivers a fast, polished experience across all devices and browsers.",
+        "expertise": "Frontend Development, Performance Optimization"
+      },
+      "zhongtao": {
+        "bio": "AI specialist building intelligent chatbot solutions. Zhongtao develops conversational interfaces that help users find their perfect rental through natural language interactions.",
+        "expertise": "AI, Chatbots"
+      }
+    }
+  },
+  "Contact": {
+    "title": "Get in Touch",
+    "subtitle": "Have questions, feedback, or just want to say hello? We'd love to hear from you. Fill out the form below or reach out through any of our channels.",
+    "form": {
+      "title": "Send us a message",
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "your.email@example.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "What's this about?",
+      "message": "Message",
+      "messagePlaceholder": "Tell us more...",
+      "submitButton": "Send Message",
+      "successTitle": "Message Sent!",
+      "successMessage": "We'll get back to you as soon as possible."
+    },
+    "contactInfo": {
+      "title": "Contact Information",
+      "email": "Email",
+      "office": "Office",
+      "officeAddress": "Ping An Finance Centre<br />Building A, 35th Floor<br />Shenzhen, Guangdong 518000"
+    },
+    "followUs": {
+      "title": "Follow Us"
+    },
+    "officeHours": {
+      "title": "Office Hours",
+      "weekdays": "Monday - Friday:",
+      "weekdaysTime": "9:00 AM - 6:00 PM",
+      "saturday": "Saturday:",
+      "saturdayTime": "10:00 AM - 4:00 PM",
+      "sunday": "Sunday:",
+      "sundayTime": "Closed"
+    }
+  },
+  "Blog": {
+    "title": "Learn how to boost your rental search",
+    "subtitle": "Discover strategies to get your ideal rental properties with QRent. From search optimization and property evaluation to lease negotiation and move-in preparation, explore our resources and take control of your rental journey.",
+    "noPosts": "No blog posts available yet.",
+    "author": "QRent Team"
+  },
+  "Common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "TodoProgressBar": {
+    "title": "Rental Progress",
+    "completed": "Completed",
+    "statuses": {
+      "determineBudget": "Determine Budget & Area",
+      "findProperties": "Find Properties",
+      "scheduleInspection": "Schedule Inspection",
+      "submitApplication": "Submit Application",
+      "signContract": "Sign Contract",
+      "payDeposit": "Pay Deposit & Rent",
+      "moveIn": "Move-in Inspection (Condition Report)"
+    },
+    "descriptions": {
+      "findProperties": "Browsing property listings on various platforms",
+      "scheduleInspection": "Contact agents to arrange site visits",
+      "submitApplication": "Prepare materials and fill out application forms",
+      "signContract": "Carefully read terms and sign",
+      "payDeposit": "Complete down payment",
+      "moveIn": "Collect keys and check property condition"
+    }
+  },
+  "home": {
+    "title": "Qrent - Your Perfect Home Awaits",
+    "description": "Discover exceptional rental properties with ease. Your dream home is just a search away.",
+    "ogTitle": "Qrent - Your Perfect Home Awaits",
+    "ogDescription": "Discover exceptional rental properties with ease. Your dream home is just a search away.",
+    "twitterTitle": "Qrent - Your Perfect Home Awaits",
+    "twitterDescription": "Discover exceptional rental properties with ease. Your dream home is just a search away."
+  },
+  "search": {
+    "title": "Property Search - QRent",
+    "description": "Search for rental properties by location, price, and amenities. Find your perfect home today.",
+    "titleWithQuery": "Search results for \"{query}\" - QRent",
+    "descriptionWithQuery": "Find rental properties matching \"{query}\" on QRent. Your perfect home awaits.",
+    "titleLocation": "{query} Rental Properties & Apartments | QRent",
+    "descriptionLocation": "Discover rental properties in {query}. Compare prices, view photos, and find your perfect home with QRent.",
+    "titleLocationType": "{query} - Rental Properties & Apartments | QRent",
+    "descriptionLocationType": "Find the best {query} rentals. Browse photos, prices, and amenities. Contact landlords directly through QRent."
+  },
+  "SearchResults": {
+    "searchResults": "Search Results",
+    "averagePrice": "Average Price",
+    "averageCommute": "Average Commute",
+    "topRegions": "Top Regions",
+    "properties": "properties",
+    "avgWeek": "avg/week",
+    "commute": "commute",
+    "prev": "Prev",
+    "next": "Next",
+    "page": "Page",
+    "of": "of",
+    "noResults": "No results",
+    "noResultsForQuery": "We couldn't find any results for \"{query}\". Try different keywords.",
+    "adjustFilters": "Try adjusting your search filters to find properties.",
+    "goToHomepage": "Go to homepage",
+    "perWeek": "/week",
+    "minutes": "minutes"
+  },
+  "PropertyGrid": {
+    "dailyNewHouses": "Daily New Houses Around",
+    "loadError": "Unable to load properties. Please try again later."
+  },
+  "PropertyCard": {
+    "bedrooms": "bedrooms",
+    "bathrooms": "bathrooms",
+    "parking": "parking",
+    "availableFrom": "Available from",
+    "viewDetails": "View Details",
+    "house": "House",
+    "apartment": "Apartment",
+    "perWeek": "/week",
+    "availableNow": "Available now",
+    "availableInDays": "Available in {days} day{plural}",
+    "available": "Available",
+    "published": "Published on",
+    "minToUniversity": "min to university",
+    "source": "Source",
+    "flatmatesWarning": "Friendly reminder: Information on this website varies in quality. Please exercise caution and assess potential risks yourself.",
+    "subscribe": "Add to Favorites",
+    "unsubscribe": "Remove from Favorites",
+    "subscriptionTimeoutError": "Operation timed out. Please try again later.",
+    "subscriptionError": "Operation failed. Please try again later.",
+    "error": "Error",
+    "keywords": {
+      "bedroom": "bedroom",
+      "bedrooms": "bedrooms",
+      "one-bedroom": "one-bedroom",
+      "two-bedroom": "two-bedroom",
+      "three-bedroom": "three-bedroom",
+      "3-bedroom": "3-bedroom",
+      "apartment": "apartment",
+      "furnished": "furnished",
+      "bathrooms": "bathrooms",
+      "bathroom": "bathroom",
+      "luxury": "luxury",
+      "modern": "modern",
+      "spacious": "spacious",
+      "contemporary": "contemporary",
+      "executive": "executive",
+      "studio": "studio",
+      "design": "design",
+      "open": "open",
+      "plan": "plan",
+      "timber": "timber",
+      "interiors": "interiors",
+      "easy": "easy",
+      "access": "access",
+      "fully": "fully",
+      "study": "study",
+      "living": "living",
+      "level": "level",
+      "ocean": "ocean",
+      "view": "view",
+      "boutique": "boutique",
+      "little": "little",
+      "bay": "bay",
+      "award": "award",
+      "winning": "winning",
+      "redevelopment": "redevelopment",
+      "leisure": "leisure",
+      "heart": "heart",
+      "private": "private",
+      "side": "side",
+      "pathway": "pathway",
+      "quiet": "quiet",
+      "semi": "semi",
+      "semi-detached": "semi-detached",
+      "residence": "residence",
+      "beatty": "beatty",
+      "street": "street",
+      "facade": "facade",
+      "kitchen": "kitchen",
+      "walkable": "walkable",
+      "trains": "trains",
+      "beach": "beach",
+      "elegance": "elegance"
+    }
+  },
+  "WeChatGroupEntry": {
+    "title": "Rental Community",
+    "description": "Scan to join and get free rental guide",
+    "note": "Note: Please mention your school",
+    "instruction": "Long press to scan and join",
+    "ariaLabel": "Rental Community"
+  },
+  "NotificationBar": {
+    "message1": "🎉 ఇప్పుడు కాలేజీ ప్రాంతం మరియు ప్రయాణ సమయం ఆధారంగా వసతి శోధనకు మద్దతు ఉంది",
+    "message2": "💝 నిజమైన ధర వివరాలతో వ్యక్తిగతీకరించిన విద్యార్థి వసతి శోధన",
+    "message3": "⭐ మీ కాలేజీ మరియు ప్రాధాన్యతల ఆధారంగా డైనమిక్ స్కోరింగ్"
+  }
+}

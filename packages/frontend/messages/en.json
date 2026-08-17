@@ -89,8 +89,8 @@
     "getInTouch": "Get in touch",
     "copyEmail": "Copy email address: yyzyfish5@gmail.com",
     "emailCopied": "Copied to clipboard",
-    "copyright": "Copyright © 2025 - All right reserved by Qrent Industries Ltd",
-    "icp": "网页备案号: 粤ICP备2025363367号-1"
+    "copyright": "Copyright © 2026 - All rights reserved by Nestora PGFinder",
+    "icp": "AI-Powered Accommodation & PG Recommendation Engine"
   },
   "About": {
     "title": "About QRent",
@@ -252,7 +252,9 @@
   },
   "LanguageSwitcher": {
     "english": "English",
-    "chinese": "中文"
+    "hindi": "हिन्दी",
+    "telugu": "తెలుగు",
+    "kannada": "ಕನ್ನಡ"
   },
   "SearchResults": {
     "searchResults": "Search Results",

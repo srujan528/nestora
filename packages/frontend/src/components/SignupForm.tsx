@@ -13,8 +13,10 @@ import { HiEye, HiEyeOff } from 'react-icons/hi';
 import { z } from 'zod';
 
 type FormData = {
-  name?: string;
+  name: string;
   email: string;
+  phone?: string;
+  role: 'STUDENT' | 'OWNER';
   password: string;
   confirmPassword: string;
 };
@@ -31,8 +33,10 @@ export default function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormPro
   const t = useTranslations('Auth');
 
   const formSchema = z.object({
-    name: z.string().optional(),
+    name: z.string().min(1, { message: 'Full name is required' }),
     email: z.string().email({ message: t('invalidEmail') }),
+    phone: z.string().optional(),
+    role: z.enum(['STUDENT', 'OWNER']),
     password: z.string().min(6, { message: t('passwordMinLength') }),
     confirmPassword: z.string().min(6, { message: t('passwordMinLength') }),
   }).refine((data) => data.password === data.confirmPassword, {
@@ -42,10 +46,12 @@ export default function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormPro
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    mode: "onChange", // Enable real-time validation
+    mode: "onChange",
     defaultValues: {
       name: "",
       email: "",
+      phone: "",
+      role: "STUDENT",
       password: "",
       confirmPassword: "",
     },
@@ -53,7 +59,7 @@ export default function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormPro
 
   const onSubmit = async (data: FormData) => {
     try {
-      await register(data.email, data.password, data.name || undefined);
+      await register(data.email, data.password, data.name, data.role, data.phone);
       onSuccess?.();
     } catch (err: unknown) {
       form.setError("root", {
@@ -75,12 +81,49 @@ export default function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormPro
             <CardContent className="space-y-4">
               <FormField
                 control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold text-gray-900">I am joining Nestora as:</FormLabel>
+                    <FormControl>
+                      <div className="grid grid-cols-2 gap-3 mt-1">
+                        <button
+                          type="button"
+                          onClick={() => field.onChange('STUDENT')}
+                          className={`p-3 rounded-lg border text-sm font-medium transition-all ${
+                            field.value === 'STUDENT'
+                              ? 'border-blue-600 bg-blue-50 text-blue-700 shadow-sm'
+                              : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                          }`}
+                        >
+                          🎓 Student / Buyer
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => field.onChange('OWNER')}
+                          className={`p-3 rounded-lg border text-sm font-medium transition-all ${
+                            field.value === 'OWNER'
+                              ? 'border-blue-600 bg-blue-50 text-blue-700 shadow-sm'
+                              : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                          }`}
+                        >
+                          🏢 PG Owner / Host
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('name')}</FormLabel>
                     <FormControl>
-                      <Input placeholder={t('name')} {...field} />
+                      <Input placeholder="Full Name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -94,7 +137,21 @@ export default function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormPro
                   <FormItem>
                     <FormLabel>{t('email')}</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder={t('email')} {...field} />
+                      <Input type="email" placeholder="name@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number (Optional)</FormLabel>
+                    <FormControl>
+                      <Input type="tel" placeholder="+91 9876543210" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -4,13 +4,15 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useTRPC } from './trpc';
 
-interface User {
+export interface User {
   id: number;
   email: string;
-  name?: string;
-  phone?: string;
-  gender?: number;
+  name: string;
+  phone?: string | null;
+  role: 'STUDENT' | 'OWNER' | 'ADMIN';
   emailVerified: boolean;
+  phoneVerified: boolean;
+  studentProfile?: any;
 }
 
 interface AuthContextType {
@@ -18,7 +20,7 @@ interface AuthContextType {
   token: string | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name?: string) => Promise<void>;
+  register: (email: string, password: string, name: string, role?: 'STUDENT' | 'OWNER', phone?: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => void;
 }
@@ -37,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     trpc.auth.register.mutationOptions()
   );
   const userQuery = useQuery({
-    ...trpc.users.getProfile.queryOptions(),
+    ...trpc.auth.me.queryOptions(),
     enabled: !!token,
     retry: false,
   });
@@ -59,13 +61,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [token]);
 
   const login = async (email: string, password: string) => {
-    const result = await loginMutation.mutateAsync({ email, password });
+    const result = await (loginMutation.mutateAsync as any)({ email, password });
     setToken(result.token);
+    userQuery.refetch();
   };
 
-  const register = async (email: string, password: string, name?: string) => {
-    const result = await registerMutation.mutateAsync({ email, password, name });
+  const register = async (email: string, password: string, name: string, role: 'STUDENT' | 'OWNER' = 'STUDENT', phone?: string) => {
+    const result = await (registerMutation.mutateAsync as any)({ email, password, name, role, phone });
     setToken(result.token);
+    userQuery.refetch();
   };
 
   const logout = () => {
@@ -79,9 +83,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const contextValue: AuthContextType = {
-    user: userQuery.data as User | null || null,
+    user: (userQuery.data as unknown as User) || null,
     token,
-    isLoading: isLoading || userQuery.isLoading,
+    isLoading: isLoading || (!!token && userQuery.isLoading),
     login,
     register,
     logout,
@@ -102,4 +106,3 @@ export function useAuth() {
   }
   return context;
 }
-

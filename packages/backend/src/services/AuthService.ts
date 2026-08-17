@@ -7,15 +7,23 @@ import { hashPassword, comparePassword } from '@/utils/bcrypt';
 import { userService } from './UserService';
 
 class AuthService {
-  async register(userData: User): Promise<string> {
+  async register(userData: User & { role?: any }): Promise<{ token: string; user: any }> {
     if (await prisma.user.findUnique({ where: { email: userData.email } })) {
       throw new HttpError(400, 'Email already exists');
     }
 
+    const role = userData.role || 'STUDENT';
     const user = await prisma.user.create({
       data: {
-        ...userData,
+        email: userData.email,
+        name: userData.name,
+        phone: userData.phone || null,
+        role: role,
         password: await hashPassword(userData.password),
+        studentProfile: role === 'STUDENT' ? { create: {} } : undefined,
+      },
+      include: {
+        studentProfile: true,
       },
     });
 
@@ -30,12 +38,16 @@ class AuthService {
       },
     });
 
-    return token;
+    const { password: _, ...userWithoutPassword } = user;
+    return { token, user: userWithoutPassword };
   }
 
-  async login(userData: Pick<User, 'email' | 'password'>): Promise<string> {
+  async login(userData: Pick<User, 'email' | 'password'>): Promise<{ token: string; user: any }> {
     const user = await prisma.user.findUnique({
       where: { email: userData.email },
+      include: {
+        studentProfile: true,
+      },
     });
 
     if (!user) {
@@ -58,7 +70,8 @@ class AuthService {
       },
     });
 
-    return token;
+    const { password: _, ...userWithoutPassword } = user;
+    return { token, user: userWithoutPassword };
   }
 
   async changeAuthProfile(

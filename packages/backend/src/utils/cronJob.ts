@@ -1,7 +1,6 @@
 import cron from 'node-cron';
-import { propertyService } from '@/services/PropertyService';
 
+// Scheduled tasks placeholder
 cron.schedule('0 10 * * *', async () => {
-  console.log('[Cron] Sending daily property recommendation');
-  await propertyService.sendDailyPropertyRecommendation();
+  console.log('[Cron] Daily maintenance job');
 });

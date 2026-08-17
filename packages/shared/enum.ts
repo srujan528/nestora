@@ -1,24 +1,34 @@
-export enum SCHOOL {
-  UNSW = 'UNSW',
-  USYD = 'USYD',
-  UTS = 'UTS',
-}
-
-export enum PROPERTY_TYPE {
-  House = 1,
-  Apartment = 2,
-}
-
-export enum EMAIL_PREFERENCE {
-  DailyPropertyRecommendation = 1,
-}
-
-export enum GENDER {
-  Female = 0,
-  Male = 1,
-}
-
 export enum LOCALE {
   EN = 'en',
-  ZH = 'zh',
+  HI = 'hi',
+  TE = 'te',
+  KN = 'kn',
+}
+
+export enum ROLE {
+  STUDENT = 'STUDENT',
+  OWNER = 'OWNER',
+  ADMIN = 'ADMIN',
+}
+
+export enum GENDER_RESTRICTION {
+  BOYS = 'BOYS',
+  GIRLS = 'GIRLS',
+  CO_ED = 'CO_ED',
+}
+
+export enum ROOM_TYPE {
+  SINGLE = 'SINGLE',
+  DOUBLE_SHARING = 'DOUBLE_SHARING',
+  TRIPLE_SHARING = 'TRIPLE_SHARING',
+  FOUR_SHARING = 'FOUR_SHARING',
+  PRIVATE_ROOM = 'PRIVATE_ROOM',
+  FULL_FLAT = 'FULL_FLAT',
+}
+
+export enum FOOD_TYPE {
+  VEG_ONLY = 'VEG_ONLY',
+  NON_VEG_ALLOWED = 'NON_VEG_ALLOWED',
+  JAIN_AVAILABLE = 'JAIN_AVAILABLE',
+  NO_FOOD = 'NO_FOOD',
 }

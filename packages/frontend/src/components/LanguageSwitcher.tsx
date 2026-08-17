@@ -38,35 +38,60 @@ export default function LanguageSwitcher() {
     };
   }, [isOpen]);
 
+  const getLocaleLabel = (l: string) => {
+    switch (l) {
+      case LOCALE.HI:
+        return t('hindi');
+      case LOCALE.TE:
+        return t('telugu');
+      case LOCALE.KN:
+        return t('kannada');
+      case LOCALE.EN:
+      default:
+        return t('english');
+    }
+  };
+
+  const languages = [
+    { code: LOCALE.EN, label: t('english') },
+    { code: LOCALE.HI, label: t('hindi') },
+    { code: LOCALE.TE, label: t('telugu') },
+    { code: LOCALE.KN, label: t('kannada') },
+  ];
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors"
         aria-label="Switch language"
+        suppressHydrationWarning
       >
         <HiGlobeAlt className="h-4 w-4" />
-        <span className="hidden sm:inline">
-          {locale === LOCALE.EN ? t('english') : t('chinese')}
+        <span className="hidden sm:inline" suppressHydrationWarning>
+          {mounted ? getLocaleLabel(locale) : 'English'}
         </span>
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-xl border border-gray-200 py-1 z-[9999]">
-          <button
-            onClick={() => switchLanguage(LOCALE.EN)}
-            className={`flex items-center w-full px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${locale === LOCALE.EN ? 'text-blue-600 bg-blue-50' : 'text-gray-700'
+        <div className="absolute right-0 mt-2 w-36 bg-white rounded-md shadow-xl border border-gray-200 py-1 z-[9999]">
+          {languages.map((lang) => (
+            <button
+              key={lang.code}
+              onClick={() => switchLanguage(lang.code)}
+              className={`flex items-center w-full px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${
+                locale === lang.code ? 'text-blue-600 bg-blue-50 font-semibold' : 'text-gray-700'
               }`}
-          >
-            {t('english')}
-          </button>
-          <button
-            onClick={() => switchLanguage(LOCALE.ZH)}
-            className={`flex items-center w-full px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${locale === LOCALE.ZH ? 'text-blue-600 bg-blue-50' : 'text-gray-700'
-              }`}
-          >
-            {t('chinese')}
-          </button>
+            >
+              {lang.label}
+            </button>
+          ))}
         </div>
       )}
     </div>

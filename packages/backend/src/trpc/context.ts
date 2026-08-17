@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { prisma, User } from '@qrent/shared';
 import type { TrpcContext } from './trpc';
 import { LOCALE } from '@qrent/shared/enum';
 import { isLocale } from '@qrent/shared/utils/helper';
@@ -12,6 +13,7 @@ export async function createTRPCContext({
   res: Response;
 }): Promise<TrpcContext> {
   let userId: number | undefined;
+  let user: User | null = null;
 
   // Extract authentication info
   const authHeader = req.headers.authorization;
@@ -23,6 +25,9 @@ export async function createTRPCContext({
       const decoded = jwt.verify(token, secret) as { userId?: number };
       if (decoded && typeof decoded.userId === 'number') {
         userId = decoded.userId;
+        user = await prisma.user.findUnique({
+          where: { id: decoded.userId },
+        });
       }
     } catch (_) {
       // ignore invalid token for public procedures
@@ -44,5 +49,6 @@ export async function createTRPCContext({
     locale = LOCALE.EN; // Default to English if unsupported locale
   }
 
-  return { req, res, userId, locale };
+  return { req, res, userId, user, locale };
 }
+

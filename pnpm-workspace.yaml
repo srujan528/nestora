@@ -1,5 +1,23 @@
 packages:
-  # all packages in direct subdirs of packages/
   - 'packages/*'
-  # all packages in subdirs of components/
-  - 'components/*' 
+  - 'components/*'
+
+allowBuilds:
+  '@prisma/client': set this to true or false
+  '@prisma/engines': set this to true or false
+  '@swc/core': true
+  '@tailwindcss/oxide': set this to true or false
+  bcrypt: set this to true or false
+  esbuild: true
+  prisma: set this to true or false
+  sharp: set this to true or false
+
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@swc/core'
+  - '@tailwindcss/oxide'
+  - bcrypt
+  - esbuild
+  - prisma
+  - sharp

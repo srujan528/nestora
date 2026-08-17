@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-if (process.env.NODE_ENV === 'development') {
+if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
   console.log('🔄 Loading:', path.resolve(__dirname, '../../../.env'));
   dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 }
@@ -11,7 +11,6 @@ if (process.env.NODE_ENV === 'development') {
 import express, { NextFunction, Request, Response } from 'express';
 import { prisma } from '@qrent/shared';
 import HttpError from '@/error/HttpError';
-import router from '@/routes';
 import morgan from 'morgan';
 import cors from 'cors';
 import { createExpressMiddleware } from '@trpc/server/adapters/express';
@@ -74,9 +73,17 @@ app.use(
   })
 );
 
+// Root endpoint for health & server status
+app.get('/', (req: Request, res: Response) => {
+  res.json({
+    status: 'ok',
+    message: 'Nestora (PGFinder) API Backend Server is running',
+    trpcEndpoint: '/trpc',
+  });
+});
+
 app.use(authenticate);
 app.use('/api/generate-rental-letter', rentalLetterRoutes);
-app.use('/', router);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof HttpError) {
@@ -118,11 +125,11 @@ const server = app.listen(BACKEND_LISTEN_PORT, BACKEND_LISTEN_HOST, async () => 
   const userCount = await prisma.user.count().catch(err => {
     console.log(err);
   });
-  const propertyCount = await prisma.property.count().catch(err => {
+  const propertyCount = await prisma.pGListing.count().catch((err: any) => {
     console.log(err);
   });
   console.log(`You have ${userCount} users in your database`);
-  console.log(`You have ${propertyCount} properties in your database`);
+  console.log(`You have ${propertyCount} PG listings in your database`);
 });
 
 // Handle shutdown gracefully

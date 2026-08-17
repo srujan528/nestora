@@ -3,161 +3,356 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+enum Role {
+  STUDENT
+  OWNER
+  ADMIN
+}
+
+enum GenderRestriction {
+  BOYS
+  GIRLS
+  CO_ED
+}
+
+enum RoomType {
+  SINGLE
+  DOUBLE_SHARING
+  TRIPLE_SHARING
+  FOUR_SHARING
+  PRIVATE_ROOM
+  FULL_FLAT
+}
+
+enum FoodType {
+  VEG_ONLY
+  NON_VEG_ALLOWED
+  JAIN_AVAILABLE
+  NO_FOOD
+}
+
+enum MealOption {
+  BREAKFAST_LUNCH_DINNER
+  BREAKFAST_DINNER_ONLY
+  LUNCH_DINNER_ONLY
+  OPTIONAL_MESS
+  SELF_COOKING
+}
+
+enum PhotoCategory {
+  ROOM
+  BATHROOM
+  KITCHEN
+  DINING
+  COMMON_AREA
+  EXTERIOR
+  BUILDING
+}
+
+enum ListingStatus {
+  DRAFT
+  PUBLISHED
+  UNPUBLISHED
+  PENDING_VERIFICATION
+  VERIFIED
+  REJECTED
+  ARCHIVED
+}
+
+enum InquiryStatus {
+  PENDING
+  CONTACTED
+  SCHEDULED_VISIT
+  CLOSED
+}
+
 model User {
-  id               Int               @id @default(autoincrement()) @db.UnsignedInt
-  email            String            @unique @db.VarChar(50)
-  password         String            @db.VarChar(200)
-  name             String            @default("User") @db.VarChar(50)
-  gender           Int?              @db.UnsignedTinyInt
-  phone            String?           @unique @db.Char(11)
-  emailVerified    Boolean           @default(false) @map("email_verified")
-  emailPreferences EmailPreference[]
-  preferences      Preference[]
-  userSessions     UserSession[]
-  properties       Property[]        @relation("PropertyToUser")
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  password      String
+  name          String
+  phone         String?  @unique
+  role          Role     @default(STUDENT)
+  emailVerified Boolean  @default(false) @map("email_verified")
+  phoneVerified Boolean  @default(false) @map("phone_verified")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  studentProfile StudentProfile?
+  ownerListings  PGListing[]      @relation("OwnerListings")
+  reviews        Review[]
+  savedPGs       SavedPG[]
+  inquiries      Inquiry[]
+  userSessions   UserSession[]
 
   @@map("users")
 }
 
-model EmailPreference {
-  userId Int  @map("user_id") @db.UnsignedInt
-  type   Int  @db.UnsignedTinyInt
-  user   User @relation(fields: [userId], references: [id])
+model StudentProfile {
+  id                 Int       @id @default(autoincrement())
+  userId             Int       @unique @map("user_id")
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collegeId          Int?      @map("college_id")
+  college            College?  @relation(fields: [collegeId], references: [id])
+  minBudget          Int       @default(5000) @map("min_budget")
+  maxBudget          Int       @default(15000) @map("max_budget")
+  preferredSharing   RoomType? @map("preferred_sharing")
+  foodPreference     FoodType  @default(VEG_ONLY) @map("food_preference")
+  acRequired         Boolean   @default(false) @map("ac_required")
+  maxCommuteTimeMins Int       @default(30) @map("max_commute_time_mins")
+  priorityOrder      String    @default("budget,commute,food,amenities") @map("priority_order")
+  structuredJson     String?   @map("structured_json")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
 
-  @@id([userId, type])
-  @@map("email_preferences")
+  @@map("student_profiles")
 }
 
 model UserSession {
-  id        Int      @id @default(autoincrement()) @db.UnsignedInt
-  userId    Int      @map("user_id") @db.UnsignedInt
-  token     String   @db.VarChar(255)
-  expiresAt DateTime @map("expires_at") @db.DateTime(0)
-  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(0)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.DateTime(0)
-  user      User     @relation(fields: [userId], references: [id])
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  token     String
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId], map: "user_sessions_user_id_fkey")
+  @@index([userId])
   @@map("user_sessions")
 }
 
-model Preference {
-  id             Int       @id @default(autoincrement()) @db.UnsignedInt
-  targetSchool   String    @map("target_school") @db.VarChar(100)
-  minPrice       Int?      @map("min_price") @db.UnsignedInt
-  maxPrice       Int?      @map("max_price") @db.UnsignedInt
-  minBedrooms    Int?      @map("min_bedrooms") @db.UnsignedTinyInt
-  maxBedrooms    Int?      @map("max_bedrooms") @db.UnsignedTinyInt
-  minBathrooms   Int?      @map("min_bathrooms") @db.UnsignedTinyInt
-  maxBathrooms   Int?      @map("max_bathrooms") @db.UnsignedTinyInt
-  regions        String?   @db.Text
-  propertyType   Int?      @map("property_type") @db.UnsignedTinyInt
-  minRating      Float?    @default(13) @map("min_rating")
-  minCommuteTime Int?      @map("min_commute_time") @db.UnsignedInt
-  maxCommuteTime Int?      @map("max_commute_time") @db.UnsignedInt
-  moveInDate     DateTime? @map("move_in_date") @db.DateTime(0)
-  userId         Int?      @map("user_id") @db.UnsignedInt
-  user           User?     @relation(fields: [userId], references: [id])
+model College {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  shortName String? @map("short_name")
+  city      String
+  state     String
+  address   String
+  placeId   String? @map("place_id")
+  latitude  Float
+  longitude Float
+  website   String?
 
-  @@index([userId], map: "preferences_user_id_fkey")
-  @@map("preferences")
+  // Relations
+  hostel     Hostel?
+  pgListings PGListing[]      @relation("CollegeProximity")
+  students   StudentProfile[]
+
+  @@index([city])
+  @@map("colleges")
 }
 
-enum RoomType {
-  entire_home
-  primary_bedroom
-  secondary_bedroom
-  shared_bedroom
-  living_room
-  study_room
+model Hostel {
+  id                    Int               @id @default(autoincrement())
+  collegeId             Int               @unique @map("college_id")
+  college               College           @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  annualFee             Int               @map("annual_fee")
+  monthlyRentEquivalent Int               @map("monthly_rent_equivalent")
+  messFeeMonthly        Int               @default(0) @map("mess_fee_monthly")
+  electricityMonthlyEst Int               @default(0) @map("electricity_monthly_est")
+  commuteCostMonthly    Int               @default(0) @map("commute_cost_monthly")
+  totalMonthlyCost      Int               @map("total_monthly_cost")
+  genderRestriction     GenderRestriction @default(CO_ED) @map("gender_restriction")
+  occupancyTypes        String
+  curfewTime            String            @default("10:00 PM") @map("curfew_time")
+  amenities             String
+  distanceToCampus      Float             @default(0.0) @map("distance_to_campus")
+  pros                  String
+  cons                  String
+  description           String
+  isDemoData            Boolean           @default(true) @map("is_demo_data")
+
+  @@map("hostels")
 }
 
-model Property {
-  id              Int              @id @default(autoincrement()) @db.UnsignedInt
-  price           Int              @db.UnsignedInt
-  address         String           @db.VarChar(60)
-  regionId        Int              @map("region_id") @db.UnsignedInt
-  bedroomCount    Int              @map("bedroom_count") @db.UnsignedTinyInt
-  bathroomCount   Int              @map("bathroom_count") @db.UnsignedTinyInt
-  parkingCount    Int              @map("parking_count") @db.UnsignedTinyInt
-  propertyType    Int              @map("property_type") @db.UnsignedTinyInt
-  houseId         Int              @unique(map: "house_id") @map("house_id") @db.UnsignedInt
-  availableDate   DateTime?        @map("available_date") @db.DateTime(0)
-  keywords        String           @db.Text
-  averageScore    Float            @map("average_score") @db.Float
-  descriptionEn   String?          @map("description_en") @db.VarChar(1024)
-  descriptionCn   String?          @map("description_cn") @db.VarChar(1024)
-  url             String           @db.VarChar(255)
-  publishedAt     DateTime         @map("published_at") @db.DateTime(0)
-  thumbnailUrl    String           @default("") @map("thumbnail_url") @db.VarChar(500)
-  availableArea   RoomType         @default(entire_home) @map("available_area")
-  region          Region           @relation(fields: [regionId], references: [id])
-  property_school PropertySchool[]
-  images          PropertyImage[]
-  users           User[]           @relation("PropertyToUser")
+model PGListing {
+  id                    Int               @id @default(autoincrement())
+  title                 String
+  ownerId               Int               @map("owner_id")
+  owner                 User              @relation("OwnerListings", fields: [ownerId], references: [id])
+  collegeId             Int               @map("college_id")
+  college               College           @relation("CollegeProximity", fields: [collegeId], references: [id])
 
-  @@index([price])
-  @@index([address])
-  @@index([regionId])
-  @@index([bedroomCount])
-  @@index([bathroomCount])
-  @@index([parkingCount])
-  @@index([propertyType])
-  @@index([houseId])
-  @@index([availableDate])
-  @@index([averageScore])
-  @@index([publishedAt])
-  @@map("properties")
+  // Location & Google Places New API placeholders
+  address               String
+  locality              String
+  city                  String
+  pincode               String
+  placeId               String?           @map("place_id")
+  latitude              Float
+  longitude             Float
+
+  // Routes / Commute Placeholders
+  distanceMeters        Int               @default(0) @map("distance_meters")
+  commuteTimeMins       Int               @default(0) @map("commute_time_mins")
+  commuteMode           String            @default("WALKING") @map("commute_mode")
+  commuteCostEstMonthly Int               @default(0) @map("commute_cost_est_monthly")
+  commuteFareFormula    String            @default("Walking (₹0)") @map("commute_fare_formula")
+
+  // Rules & Attributes
+  genderRestriction     GenderRestriction @map("gender_restriction")
+  curfewTime            String?           @map("curfew_time")
+  noticePeriodDays      Int               @default(30) @map("notice_period_days")
+  houseRules            String?           @map("house_rules")
+
+  // Pricing & Breakdown
+  minRent               Int               @map("min_rent")
+  maxRent               Int               @map("max_rent")
+  securityDeposit       Int               @map("security_deposit")
+  estElectricityMonthly Int               @default(800) @map("est_electricity_monthly")
+  estMaintenanceMonthly Int               @default(0) @map("est_maintenance_monthly")
+
+  // Food Details
+  foodType              FoodType          @default(VEG_ONLY) @map("food_type")
+  mealOption            MealOption        @default(BREAKFAST_LUNCH_DINNER) @map("meal_option")
+  foodIncludedInRent    Boolean           @default(true) @map("food_included_in_rent")
+  extraFoodCharges      Int               @default(0) @map("extra_food_charges")
+
+  // Ratings & Evidence Scores
+  averageRating         Float             @default(0.0) @map("average_rating")
+  reviewCount           Int               @default(0) @map("review_count")
+  cleanlinessScore      Float             @default(0.0) @map("cleanliness_score")
+  foodScore             Float             @default(0.0) @map("food_score")
+  wifiScore             Float             @default(0.0) @map("wifi_score")
+  securityScore         Float             @default(0.0) @map("security_score")
+
+  // Status & Seed Flag
+  status                ListingStatus     @default(DRAFT)
+  isVerified            Boolean           @default(false) @map("is_verified")
+  isDemoData            Boolean           @default(true) @map("is_demo_data")
+  verificationNotes     String?           @map("verification_notes")
+  description           String
+  publishedAt           DateTime?         @map("published_at")
+  createdAt             DateTime          @default(now()) @map("created_at")
+  updatedAt             DateTime          @updatedAt @map("updated_at")
+
+  // Relations
+  rooms                 Room[]
+  photos                PGPhoto[]
+  amenities             PGAmenity[]
+  weeklyMenu            WeeklyMenu?
+  reviews               Review[]
+  savedBy               SavedPG[]
+  inquiries             Inquiry[]
+
+  @@index([collegeId])
+  @@index([city])
+  @@index([genderRestriction])
+  @@index([minRent, maxRent])
+  @@index([status, isVerified, isDemoData])
+  @@map("pg_listings")
 }
 
-model Region {
-  id         Int        @id @default(autoincrement()) @db.UnsignedInt
-  name       String     @unique @db.VarChar(255)
-  state      String     @db.VarChar(20)
-  postcode   Int        @db.UnsignedInt
-  properties Property[]
-  schools    School[]   @relation("RegionToSchool")
+model Room {
+  id              Int       @id @default(autoincrement())
+  pgId            Int       @map("pg_id")
+  pg              PGListing @relation(fields: [pgId], references: [id], onDelete: Cascade)
+  roomType        RoomType  @map("room_type")
+  monthlyRent     Int       @map("monthly_rent")
+  securityDeposit Int       @map("security_deposit")
+  isAc            Boolean   @default(false) @map("is_ac")
+  hasAttachedBath Boolean   @default(false) @map("has_attached_bath")
+  totalBeds       Int       @map("total_beds")
+  availableBeds   Int       @map("available_beds")
+  description     String?
+  photos          PGPhoto[]
 
-  @@index([name])
-  @@map("regions")
+  @@index([pgId])
+  @@map("rooms")
 }
 
-model School {
-  id              Int              @id @default(autoincrement()) @db.UnsignedInt
-  name            String           @unique @db.VarChar(255)
-  property_school PropertySchool[]
-  regions         Region[]         @relation("RegionToSchool")
+model PGPhoto {
+  id           Int           @id @default(autoincrement())
+  pgId         Int           @map("pg_id")
+  pg           PGListing     @relation(fields: [pgId], references: [id], onDelete: Cascade)
+  roomId       Int?          @map("room_id")
+  room         Room?         @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  url          String
+  category     PhotoCategory @default(ROOM)
+  caption      String?
+  displayOrder Int           @default(0) @map("display_order")
+  createdAt    DateTime      @default(now()) @map("created_at")
 
-  @@index([name])
-  @@map("schools")
+  @@index([pgId, category])
+  @@map("pg_photos")
 }
 
-model PropertySchool {
-  property_id Int      @db.UnsignedInt
-  school_id   Int      @db.UnsignedInt
-  commuteTime Int?     @map("commute_time") @db.UnsignedInt
-  properties  Property @relation(fields: [property_id], references: [id], onDelete: Cascade)
-  schools     School   @relation(fields: [school_id], references: [id], onDelete: Cascade)
+model PGAmenity {
+  id       Int       @id @default(autoincrement())
+  pgId     Int       @map("pg_id")
+  pg       PGListing @relation(fields: [pgId], references: [id], onDelete: Cascade)
+  name     String
+  category String    @default("General")
+  icon     String?
 
-  @@id([property_id, school_id])
-  @@index([property_id])
-  @@index([school_id])
-  @@map("property_school")
+  @@index([pgId])
+  @@map("pg_amenities")
 }
 
-model PropertyImage {
-  id           Int      @id @default(autoincrement()) @db.UnsignedInt
-  propertyId   Int      @map("property_id") @db.UnsignedInt
-  url          String   @db.VarChar(500)
-  displayOrder Int      @default(0) @map("display_order") @db.UnsignedTinyInt
-  createdAt    DateTime @default(now()) @map("created_at") @db.DateTime(0)
-  property     Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+model WeeklyMenu {
+  id        Int       @id @default(autoincrement())
+  pgId      Int       @unique @map("pg_id")
+  pg        PGListing @relation(fields: [pgId], references: [id], onDelete: Cascade)
+  monday    String
+  tuesday   String
+  wednesday String
+  thursday  String
+  friday    String
+  saturday  String
+  sunday    String
+  updatedAt DateTime  @updatedAt @map("updated_at")
 
-  @@index([propertyId, displayOrder])
-  @@map("property_images")
+  @@map("weekly_menus")
+}
+
+model Review {
+  id                Int       @id @default(autoincrement())
+  pgId              Int       @map("pg_id")
+  pg                PGListing @relation(fields: [pgId], references: [id], onDelete: Cascade)
+  userId            Int       @map("user_id")
+  user              User      @relation(fields: [userId], references: [id])
+  rating            Int
+  cleanlinessRating Int       @map("cleanliness_rating")
+  foodRating        Int       @map("food_rating")
+  wifiRating        Int       @map("wifi_rating")
+  securityRating    Int       @map("security_rating")
+  comment           String
+  ownerResponse     String?   @map("owner_response")
+  ownerRespondedAt  DateTime? @map("owner_responded_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+
+  @@index([pgId])
+  @@map("reviews")
+}
+
+model SavedPG {
+  userId    Int       @map("user_id")
+  pgId      Int       @map("pg_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pg        PGListing @relation(fields: [pgId], references: [id], onDelete: Cascade)
+
+  @@id([userId, pgId])
+  @@map("saved_pgs")
+}
+
+model Inquiry {
+  id                Int           @id @default(autoincrement())
+  pgId              Int           @map("pg_id")
+  pg                PGListing     @relation(fields: [pgId], references: [id], onDelete: Cascade)
+  userId            Int           @map("user_id")
+  user              User          @relation(fields: [userId], references: [id])
+  message           String
+  moveInDate        DateTime?     @map("move_in_date")
+  preferredRoomType RoomType?     @map("preferred_room_type")
+  status            InquiryStatus @default(PENDING)
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  @@index([pgId])
+  @@index([userId])
+  @@map("inquiries")
 }

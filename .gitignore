@@ -182,3 +182,16 @@ Thumbs.db
 # Ignore built ts files
 dist/**/*
 .vercel
+
+# Database & Build Caches
+*.db
+*.db-journal
+*.sqlite
+dev.db
+.next/
+out/
+
+# Environment secrets
+.env
+.env.local
+.env.*.local

@@ -1,51 +1,55 @@
 import { z } from 'zod';
-import { TRPCError } from '@trpc/server';
-import { createTRPC } from '../trpc';
+import { publicProcedure, protectedProcedure } from '../trpc';
 import { authService } from '@/services/AuthService';
+import { prisma } from '@qrent/shared';
 
-const t = createTRPC();
-
-export const publicProcedure = t.procedure;
-
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.userId) {
-    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Authentication required' });
-  }
-  return next();
-});
-
-export const authRouter = t.router({
+export const authRouter = {
   register: publicProcedure
     .input(
       z.object({
         email: z.string().email(),
         password: z.string().min(6),
-        name: z.string().min(1).max(50).optional(),
-        gender: z.number().int().optional(),
-        phone: z.string().length(11).optional(),
+        name: z.string().min(1).max(100),
+        role: z.enum(['STUDENT', 'OWNER']).default('STUDENT'),
+        phone: z.string().optional(),
       })
     )
     .mutation(async ({ input }) => {
-      // AuthService.register expects a User, but we only need minimal fields here.
-      // Prisma will apply defaults for optional fields.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const token = await authService.register(input as any);
-      return { token };
+      const result = await authService.register(input as any);
+      return result;
     }),
 
   login: publicProcedure
     .input(z.object({ email: z.string().email(), password: z.string().min(1) }))
     .mutation(async ({ input }) => {
-      const token = await authService.login(input);
-      return { token };
+      const result = await authService.login(input);
+      return result;
     }),
+
+  me: protectedProcedure.query(async ({ ctx }) => {
+    const user = await prisma.user.findUnique({
+      where: { id: ctx.userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        phone: true,
+        role: true,
+        emailVerified: true,
+        phoneVerified: true,
+        createdAt: true,
+        studentProfile: true,
+      },
+    });
+    return user;
+  }),
 
   changeProfile: protectedProcedure
     .input(
       z.object({
         oldPassword: z.string().min(1),
         password: z.string().min(6).optional(),
-        phone: z.string().length(11).optional(),
+        phone: z.string().optional(),
         email: z.string().email().optional(),
       })
     )
@@ -62,18 +66,6 @@ export const authRouter = t.router({
       );
       return profile;
     }),
-
-  sendVerificationEmail: protectedProcedure.mutation(async ({ ctx }) => {
-    await authService.sendVerificationEmail(ctx.userId!);
-    return { ok: true };
-  }),
-
-  verifyEmail: publicProcedure
-    .input(z.object({ email: z.string().email(), code: z.number().int() }))
-    .mutation(async ({ input }) => {
-      await authService.verifyEmail(input.email, input.code);
-      return { ok: true };
-    }),
-});
+};
 
 export type AuthRouter = typeof authRouter;

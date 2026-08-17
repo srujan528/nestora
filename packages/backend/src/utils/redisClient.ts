@@ -1,14 +1,16 @@
 import { createClient, RedisClientType } from 'redis';
 
 const redis: RedisClientType = createClient({
-  url: process.env.REDIS_URL,
+  url: process.env.REDIS_URL || 'redis://localhost:6379',
 });
 
-redis.on('error', err => console.log('Redis Client Error', err));
+redis.on('error', () => {
+  // Suppress unhandled error log when Redis is offline
+});
 
 async function connect() {
   if (!redis.isOpen) {
-    await redis.connect();
+    await redis.connect().catch(() => {});
   }
 }
 

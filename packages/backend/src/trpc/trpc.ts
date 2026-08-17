@@ -1,12 +1,20 @@
 import HttpError from '@/error/HttpError';
 import { initTRPC, TRPCError } from '@trpc/server';
 import { ZodError } from 'zod';
+import { User } from '@qrent/shared';
+
+export type TrpcContext = {
+  userId?: number;
+  user?: User | null;
+  locale: string;
+  req: import('express').Request;
+  res: import('express').Response;
+};
 
 export const createTRPC = () => {
   return initTRPC.context<TrpcContext>().create({
     errorFormatter({ shape, error }) {
       console.log('TRPC Error:', error);
-      // 统一处理 HttpError 转换
       if (error.cause instanceof HttpError) {
         const httpError = error.cause as HttpError;
         return {
@@ -20,7 +28,6 @@ export const createTRPC = () => {
         };
       }
 
-      // Zod 错误处理
       const zodIssues = error.cause instanceof ZodError ? error.cause.flatten() : null;
       return {
         ...shape,
@@ -33,12 +40,70 @@ export const createTRPC = () => {
   });
 };
 
-export type TrpcContext = {
-  userId?: number;
-  locale: string;
-  req: import('express').Request;
-  res: import('express').Response;
-};
+const t = createTRPC();
+
+export const publicProcedure = t.procedure;
+
+export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.user || !ctx.userId) {
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Authentication required' });
+  }
+  return next({
+    ctx: {
+      ...ctx,
+      user: ctx.user,
+      userId: ctx.userId,
+    },
+  });
+});
+
+export const studentProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.user || !ctx.userId) {
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Authentication required' });
+  }
+  if (ctx.user.role !== 'STUDENT' && ctx.user.role !== 'ADMIN') {
+    throw new TRPCError({ code: 'FORBIDDEN', message: 'Student access required' });
+  }
+  return next({
+    ctx: {
+      ...ctx,
+      user: ctx.user,
+      userId: ctx.userId,
+    },
+  });
+});
+
+export const ownerProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.user || !ctx.userId) {
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Authentication required' });
+  }
+  if (ctx.user.role !== 'OWNER' && ctx.user.role !== 'ADMIN') {
+    throw new TRPCError({ code: 'FORBIDDEN', message: 'Owner access required' });
+  }
+  return next({
+    ctx: {
+      ...ctx,
+      user: ctx.user,
+      userId: ctx.userId,
+    },
+  });
+});
+
+export const adminProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.user || !ctx.userId) {
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Authentication required' });
+  }
+  if (ctx.user.role !== 'ADMIN') {
+    throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+  }
+  return next({
+    ctx: {
+      ...ctx,
+      user: ctx.user,
+      userId: ctx.userId,
+    },
+  });
+});
 
 export function httpStatusToTrpcCode(statusCode: number): TRPCError['code'] {
   if (statusCode === 400) return 'BAD_REQUEST';
@@ -49,3 +114,4 @@ export function httpStatusToTrpcCode(statusCode: number): TRPCError['code'] {
   if (statusCode === 422) return 'UNPROCESSABLE_CONTENT';
   return 'INTERNAL_SERVER_ERROR';
 }
+
