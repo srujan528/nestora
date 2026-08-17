@@ -69,10 +69,7 @@ export default function PropertyCard({
 
     try {
       // Make API call with abort signal
-      await (newSubscribedState 
-        ? trpc.properties.subscribe.mutate({ propertyId }, { signal: controller.signal })
-        : trpc.properties.unsubscribe.mutate({ propertyId }, { signal: controller.signal })
-      );
+      await trpc.savedPgs.toggle.mutate({ pgId: propertyId }, { signal: controller.signal });
       
       // Clear timeout on success
       clearTimeout(timeoutId);

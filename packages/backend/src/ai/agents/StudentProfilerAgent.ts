@@ -1,3 +1,4 @@
+import { College } from '@prisma/client';
 import { AgentState, StudentPreferences } from '../AgentState';
 import { getLLMProvider } from '../LLMProviderWrapper';
 import { prisma } from '@qrent/shared';
@@ -127,7 +128,7 @@ export class StudentProfilerAgent {
       const colleges = await prisma.college.findMany();
       const promptLower = state.naturalLanguageRequest.toLowerCase();
       const matched = colleges.find(
-        c =>
+        (c: College) =>
           promptLower.includes(c.name.toLowerCase()) ||
           (c.shortName && promptLower.includes(c.shortName.toLowerCase())) ||
           promptLower.includes(c.city.toLowerCase())

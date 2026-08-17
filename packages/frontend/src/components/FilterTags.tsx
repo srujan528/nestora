@@ -26,8 +26,8 @@ export default function CurrentFiltersBar({ className = '' }: { className?: stri
     if (has('propertyType')) {
       const type = Number(read('propertyType'));
       const map: Record<number, string> = {
-        [PROPERTY_TYPE.House]: tm('house'),
-        [PROPERTY_TYPE.Apartment]: tm('apartment'),
+        1: tm('house'),
+        2: tm('apartment'),
       };
       list.push({ key: 'propertyType', label: tm('propertyType'), value: map[type] ?? String(type) });
     }

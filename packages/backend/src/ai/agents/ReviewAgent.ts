@@ -1,20 +1,23 @@
+import { Review } from '@prisma/client';
 import { AgentState } from '../AgentState';
 import { AITools } from '../tools';
+
+export interface ReviewCategoryScores {
+  cleanliness: number;
+  food: number;
+  wifi: number;
+  security: number;
+}
 
 export interface ReviewAnalysisItem {
   pgId: number;
   reviewCount: number;
   averageRating: number;
-  categoryScores?: {
-    cleanliness: number;
-    food: number;
-    wifi: number;
-    security: number;
-  };
+  categoryScores?: ReviewCategoryScores;
   positiveThemes: string[];
   negativeThemes: string[];
-  supportingReviewIds: number[];
-  summaryNote: string;
+  supportingReviewIds?: number[];
+  summaryNote?: string;
 }
 
 export class ReviewAgent {
@@ -31,12 +34,17 @@ export class ReviewAgent {
         const reviews = await AITools.getReviewsForPG(pg.id);
 
         if (reviews.length > 0) {
-          const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+          const avgRating =
+            reviews.reduce((sum: number, r: Review) => sum + r.rating, 0) / reviews.length;
           const avgClean =
-            reviews.reduce((sum, r) => sum + r.cleanlinessRating, 0) / reviews.length;
-          const avgFood = reviews.reduce((sum, r) => sum + r.foodRating, 0) / reviews.length;
-          const avgWifi = reviews.reduce((sum, r) => sum + r.wifiRating, 0) / reviews.length;
-          const avgSec = reviews.reduce((sum, r) => sum + r.securityRating, 0) / reviews.length;
+            reviews.reduce((sum: number, r: Review) => sum + r.cleanlinessRating, 0) /
+            reviews.length;
+          const avgFood =
+            reviews.reduce((sum: number, r: Review) => sum + r.foodRating, 0) / reviews.length;
+          const avgWifi =
+            reviews.reduce((sum: number, r: Review) => sum + r.wifiRating, 0) / reviews.length;
+          const avgSec =
+            reviews.reduce((sum: number, r: Review) => sum + r.securityRating, 0) / reviews.length;
 
           const positiveThemes: string[] = [];
           const negativeThemes: string[] = [];
@@ -58,7 +66,7 @@ export class ReviewAgent {
             },
             positiveThemes,
             negativeThemes,
-            supportingReviewIds: reviews.map(r => r.id),
+            supportingReviewIds: reviews.map((r: Review) => r.id),
             summaryNote: `${reviews.length} student reviews found with ${avgRating.toFixed(1)}/5.0 average rating.`,
           };
         } else {

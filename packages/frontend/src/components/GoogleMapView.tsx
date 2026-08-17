@@ -74,7 +74,7 @@ export default function GoogleMapView({
   }, [hoveredPgId]);
 
   useEffect(() => {
-    window.gm_authFailure = () => {
+    (window as any).gm_authFailure = () => {
       console.warn('[GoogleMapView] Google Maps Authentication failed or key invalid. Reverting to interactive fallback preview.');
       setApiKeyMissing(true);
     };
