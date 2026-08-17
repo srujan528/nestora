@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useLocale } from 'next-intl';
 import {
   HiSparkles,
   HiXMark,
@@ -12,6 +13,7 @@ import {
   HiArrowRight,
   HiPaperAirplane,
   HiArrowPath,
+  HiArrowLeft,
 } from 'react-icons/hi2';
 import { useTRPC } from '@/lib/trpc';
 import { useQuery } from '@tanstack/react-query';
@@ -24,6 +26,7 @@ interface AIAssistantDrawerProps {
 
 export function AIAssistantDrawer({ isOpen, onClose, selectedCollegeId }: AIAssistantDrawerProps) {
   const trpc = useTRPC();
+  const locale = useLocale();
   const [promptInput, setPromptInput] = useState('');
   const [activeQuery, setActiveQuery] = useState('');
 
@@ -56,33 +59,44 @@ export function AIAssistantDrawer({ isOpen, onClose, selectedCollegeId }: AIAssi
   ];
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/60 backdrop-blur-sm flex justify-end transition-opacity">
-      <div className="relative w-full max-w-2xl bg-slate-900 text-slate-100 h-full shadow-2xl flex flex-col border-l border-slate-800 animate-in slide-in-from-right duration-300">
+    <div
+      className="fixed inset-0 z-50 overflow-hidden bg-slate-950/60 backdrop-blur-sm flex justify-end transition-opacity"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-2xl bg-slate-900 text-slate-100 h-full shadow-2xl flex flex-col border-l border-slate-800 animate-in slide-in-from-right duration-300"
+        onClick={(e) => e.stopPropagation()}
+      >
         
         {/* Header */}
-        <div className="p-4 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between">
+        <div className="p-4 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
+            <button
+              onClick={onClose}
+              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-slate-700 flex items-center gap-1 font-bold text-xs"
+              title="Go back to search"
+            >
+              <HiArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Go Back</span>
+            </button>
             <div className="p-2 rounded-xl bg-gradient-to-tr from-amber-500 to-indigo-600 text-slate-950 shadow-md">
               <HiSparkles className="w-5 h-5 text-white animate-pulse" />
             </div>
             <div>
               <h2 className="text-base font-extrabold text-white flex items-center gap-1.5">
                 <span>Nestora AI Decision Support</span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  Multi-Agent v4.0
-                </span>
               </h2>
               <p className="text-xs text-slate-400">
-                Grounded accommodation intelligence & deterministic match scoring
+                Grounded accommodation intelligence & match scoring
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md"
           >
-            <HiXMark className="w-6 h-6" />
+            <span>Close (✕)</span>
           </button>
         </div>
 
